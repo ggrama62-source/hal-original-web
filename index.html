@@ -1318,13 +1318,13 @@ UC Irvine</span></div></td><td class="col-notes">transfer</td></tr><tr class="st
     b.setAttribute('data-year', yearValue);
     b.textContent = label;
     const activateYear = function(){
+      registerUserActivity();
       activeYear = (yearValue === "all") ? null : Number(yearValue);
       setSelectedLabel();
       updateButtons();
       scheduleFilter(false);
     };
     b.addEventListener('click', activateYear, {passive:true});
-    b.addEventListener('pointerup', activateYear, {passive:true});
     return b;
   }
 
@@ -1368,8 +1368,10 @@ UC Irvine</span></div></td><td class="col-notes">transfer</td></tr><tr class="st
     }
   }
 
-  function openDetailModal(student){
+  function openDetailModal(student, options){
     if (!student || !detailOverlay) return;
+    const opts = options || {};
+    detailOverlay.dataset.autoFeatured = opts.auto ? '1' : '0';
     setDetailPhoto(student);
     detailName.textContent = student.name || 'Student';
     detailBadges.innerHTML = [
@@ -1387,6 +1389,13 @@ UC Irvine</span></div></td><td class="col-notes">transfer</td></tr><tr class="st
     if (!detailOverlay) return;
     detailOverlay.classList.remove('open');
     detailOverlay.setAttribute('aria-hidden','true');
+    detailOverlay.dataset.autoFeatured = '0';
+  }
+
+  function dismissDetailModal(){
+    stopFeaturedMode(false);
+    closeDetailModal();
+    scheduleFeaturedIdleStart();
   }
 
   function showAdminCelebration(){
@@ -1776,9 +1785,9 @@ UC Irvine</span></div></td><td class="col-notes">transfer</td></tr><tr class="st
   if (passwordOverlay) passwordOverlay.addEventListener('click', function(e){
     if (e.target === passwordOverlay) closePasswordModal();
   });
-  if (detailCloseBtn) detailCloseBtn.addEventListener('click', closeDetailModal);
+  if (detailCloseBtn) detailCloseBtn.addEventListener('click', dismissDetailModal);
   if (detailOverlay) detailOverlay.addEventListener('click', function(e){
-    if (e.target === detailOverlay) closeDetailModal();
+    if (e.target === detailOverlay) dismissDetailModal();
   });
   function syncBackToTop(){
     if (!backToTopBtn) return;
@@ -1796,7 +1805,7 @@ UC Irvine</span></div></td><td class="col-notes">transfer</td></tr><tr class="st
 
   document.addEventListener('keydown', function(e){
     if (passwordOverlay.classList.contains('open') && e.key === 'Escape') closePasswordModal();
-    if (detailOverlay.classList.contains('open') && e.key === 'Escape') closeDetailModal();
+    if (detailOverlay.classList.contains('open') && e.key === 'Escape') dismissDetailModal();
     if (passwordOverlay.classList.contains('open') && e.key === 'Enter') submitPassword();
   });
 
