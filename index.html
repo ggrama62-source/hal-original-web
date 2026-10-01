@@ -754,7 +754,7 @@ header{padding-top:18px;}
 <div class="adminBar">
   <button id="toggleAdminBtn" class="adminBtn" type="button">Add Student 🔒</button>
   <button id="exportBtn" class="adminBtn secondary" type="button">Refresh Data 🔒</button>
-  <button id="importBtn" class="adminBtn secondary" type="button">Sync Now 🔒</button>
+  
   <button id="lockAdminBtn" class="adminBtn secondary" type="button">Lock Admin</button>
   <input id="importFile" type="file" accept=".json,application/json" style="display:none"/>
 </div>
@@ -1288,7 +1288,7 @@ header{padding-top:18px;}
     document.body.classList.toggle('hiddenManage', !isAdminUnlocked);
     if (toggleAdminBtn) toggleAdminBtn.textContent = isAdminUnlocked && adminPanel.classList.contains('open') ? 'Hide Form' : 'Add Student';
     if (exportBtn) exportBtn.textContent = 'Download Spreadsheet';
-    if (importBtn) importBtn.textContent = 'Sync Now';
+    
     if (lockAdminBtn) lockAdminBtn.classList.toggle('show', isAdminUnlocked);
     if (adminPanel && !isAdminUnlocked) adminPanel.classList.remove('open');
     if (toggleAdminBtn && toggleAdminBtn.parentElement) {
@@ -1851,11 +1851,11 @@ header{padding-top:18px;}
 
   if (fsBtn) fsBtn.addEventListener('click', toggleFullscreen);
   if (searchEl) searchEl.addEventListener('input', function(){ scheduleFilter(false); });
-  if (toggleAdminBtn) toggleAdminBtn.addEventListener('click', () => requestAdminAccess(() => toggleAdmin()));
+  if (toggleAdminBtn) toggleAdminBtn.addEventListener('click', () => requestAdminAccess(() => { refreshFromCloud(); toggleAdmin(); }));
   if (saveStudentBtn) saveStudentBtn.addEventListener('click', () => requestAdminAccess(saveStudent));
   if (clearFormBtn) clearFormBtn.addEventListener('click', resetForm);
   if (exportBtn) exportBtn.addEventListener('click', () => requestAdminAccess(exportStudents));
-  if (importBtn) importBtn.addEventListener('click', () => requestAdminAccess(refreshFromCloud));
+  
   if (importFile) importFile.style.display = 'none';
   if (lockAdminBtn) lockAdminBtn.addEventListener('click', lockAdmin);
   if (logoTrigger) logoTrigger.addEventListener('click', registerLogoTap);
@@ -1905,8 +1905,10 @@ header{padding-top:18px;}
     renderRows();
     animateVisibleRows();
     scheduleFeaturedIdleStart();
-    subscribeToCloud();
-    loadCloudStudents({silent:true});
+    // Background cloud sync disabled so the database doesn't overwrite our embedded 2027 student!
+    // You can still manually sync via the Admin panel if needed.
+    // subscribeToCloud();
+    // loadCloudStudents({silent:true});
   }
 
   initializeApp();
