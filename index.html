@@ -1098,8 +1098,23 @@ header{padding-top:18px;}
         if (!Array.isArray(data) || !data.length) throw new Error('The directory returned no records');
         const next = data.map(normalizeStudent).filter(item => item.id && item.name && item.year);
         if (!next.length) throw new Error('The directory returned no valid records');
-        const changed = JSON.stringify(next.map(({image,...item}) => item)) !== JSON.stringify(studentsCache.map(({image,...item}) => item));
-        studentsCache = next;
+        
+        // Merge cloud data with embedded data to ensure hardcoded students are never lost
+        const mergedMap = new Map();
+        // 1. Add embedded students
+        EMBEDDED_STUDENTS.map(normalizeStudent).forEach(s => mergedMap.set(s.id, s));
+        // 2. Add/overwrite with cloud students
+        next.forEach(s => mergedMap.set(s.id, s));
+        
+        // Convert back to array and sort by year desc, name asc
+        const mergedArray = Array.from(mergedMap.values());
+        mergedArray.sort((a, b) => {
+          if (b.year !== a.year) return b.year.localeCompare(a.year);
+          return a.name.localeCompare(b.name);
+        });
+
+        const changed = JSON.stringify(mergedArray.map(({image,...item}) => item)) !== JSON.stringify(studentsCache.map(({image,...item}) => item));
+        studentsCache = mergedArray;
         cloudReady = true;
         if (changed) renderRows();
         else filterRows(false);
@@ -1905,10 +1920,9 @@ header{padding-top:18px;}
     renderRows();
     animateVisibleRows();
     scheduleFeaturedIdleStart();
-    // Background cloud sync disabled so the database doesn't overwrite our embedded 2027 student!
-    // You can still manually sync via the Admin panel if needed.
-    // subscribeToCloud();
-    // loadCloudStudents({silent:true});
+    // Background sync restored! We now merge cloud data with embedded data so no one gets overwritten.
+    subscribeToCloud();
+    loadCloudStudents({silent:true});
   }
 
   initializeApp();
