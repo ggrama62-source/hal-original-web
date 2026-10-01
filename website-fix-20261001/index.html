@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+
+<html lang="en" data-directory-version="20261001-v2">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global University Destinations</title>
+<style>
+:root {
+  --maroon:#A61C44;
+  --white:#ffffff;
+  --text:#111;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:Arial,sans-serif;background:var(--maroon);color:#fff;position:relative;overflow-x:hidden;}
+header{text-align:center;padding:26px 16px 14px;}
+header img{width:240px;max-width:85vw;height:auto;}
+h1{margin:14px 0 0;font-size:42px;line-height:1.1;}
+.controls{text-align:center;padding:10px 14px 10px;}
+.searchRow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:10px 0 8px;}
+.searchWrap{position:relative;width:min(540px,92vw);}
+.searchWrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:22px;height:22px;opacity:.7;}
+input#search{width:100%;padding:15px 16px 15px 46px;font-size:20px;border-radius:14px;border:none;outline:none;}
+.fsBtn{font-size:18px;padding:12px 14px;border-radius:14px;border:2px solid rgba(255,255,255,.65);background:transparent;color:#fff;font-weight:700;}
+.metaRow{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:6px 0 12px;color:rgba(255,255,255,.92);font-size:16px;}
+#yearButtons{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin:6px auto 14px;max-width:1200px;}
+.year-btn{
+  font-size:20px;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  padding:16px 28px;
+  margin:6px;
+  border:none;
+  border-radius:18px;
+  background:rgba(255,255,255,.96);
+  color:var(--maroon);
+  cursor:pointer;
+  font-weight:800;
+  letter-spacing:.01em;
+  box-shadow:0 10px 24px rgba(0,0,0,.10), 0 2px 0 rgba(255,255,255,.35) inset;
+  transition:transform .22s ease, box-shadow .22s ease, background-color .22s ease, opacity .22s ease;
+}
+.year-btn:hover{ 
+  background:#fff; 
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px rgba(0,0,0,.14), 0 2px 0 rgba(255,255,255,.38) inset;
+}
+.year-btn:active{transform:translateY(0) scale(.98);}
+.year-btn.active{
+  background:#ffffff;
+  color:var(--maroon);
+  transform:translateY(-1px) scale(1.06);
+  box-shadow:0 16px 34px rgba(0,0,0,.18), 0 0 0 3px rgba(255,255,255,0.42) inset, 0 0 0 4px rgba(166,28,68,.10);
+}
+.year-btn.active::after{ content:" ✓"; font-weight:900; }
+table{width:min(1200px,92vw);margin:0 auto 26px;background:#fff;color:var(--text);border-radius:16px;overflow:hidden;border:2px solid rgba(255,255,255,.55);box-shadow:0 14px 36px rgba(0,0,0,.14);border-collapse:separate;border-spacing:0;}
+th{background:var(--maroon);color:#fff;padding:16px 16px;font-size:18px;text-align:left;position:sticky;top:0;z-index:20;box-shadow:0 4px 10px rgba(0,0,0,.10);}
+td{padding:18px 16px;border-bottom:1px solid #eee;font-size:18px;vertical-align:top;background:#fff;}
+tr:hover td{background:#f7f7f7;}
+.uniCell{display:flex;align-items:flex-start;gap:12px;}
+.flagImg{width:34px;height:22px;border-radius:5px;border:1px solid rgba(0,0,0,.12);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:0 0 auto;object-fit:cover;margin-top:1px;}
+#tableBody .student-row td{min-height:112px;}
+#tableBody .student-row .manage-btn{padding:11px 13px;font-size:15px;}
+@media (max-width:820px){
+  h1{font-size:32px;}
+  td,th{font-size:17px;}
+  th{padding:15px 14px;top:0;}
+  td{padding:20px 14px;}
+  .year-btn{font-size:23px;padding:18px 24px;border-radius:20px;}
+  input#search{font-size:18px;}
+  #tableBody .student-row td{min-height:124px;}
+}
+.backToTop{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  width:58px;
+  height:58px;
+  border:none;
+  border-radius:999px;
+  background:#fff;
+  color:var(--maroon);
+  font-size:28px;
+  font-weight:900;
+  box-shadow:0 16px 32px rgba(0,0,0,.22);
+  cursor:pointer;
+  z-index:9996;
+  opacity:0;
+  transform:translateY(14px) scale(.95);
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.backToTop.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+.backToTop:hover{box-shadow:0 20px 36px rgba(0,0,0,.28); transform:translateY(-2px);}
+.backToTop:active{transform:translateY(0) scale(.97);}
+.backToTop span{display:block; transform:translateY(-1px);}
+
+
+/* Tick style (keeps same button color) */
+.flag{ width:24px; height:16px; vertical-align:middle; margin-left:8px; border-radius:3px; box-shadow:0 0 0 1px rgba(0,0,0,0.12); }
+
+
+
+/* --- Student photo next to name (symmetrical layout) --- */
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.student-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 90px;
+  display: inline-block;
+  border: 2px solid rgba(0,0,0,0.12);
+}
+
+.student-photo.placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  background: rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.65);
+}
+
+
+/* --- Fix: keep photo + full name on one line --- */
+td.col-name .name-cell{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+td.col-name .name-cell span{
+  display:inline-block;
+  white-space:nowrap;
+}
+td.col-name img.student-photo{
+  display:block;
+}
+
+/* Placeholder avatar icon (no initials) */
+.student-photo.placeholder{
+  background: transparent !important;
+  border: 2px solid rgba(0,0,0,0.12);
+}
+
+/* Force photo size */
+.student-photo{width:90px;height:90px;flex:0 0 90px;}
+.student-photo.placeholder{background:transparent!important;border:2px solid rgba(0,0,0,0.12);}
+/* Guarantee avatars show */
+.student-photo{width:90px;height:90px;flex:0 0 90px;display:block;object-fit:cover;border-radius:50%;}
+.name-cell{display:flex;align-items:center;gap:14px;}
+.name-cell span{white-space:nowrap;display:inline-block;}
+.student-photo.placeholder{background:transparent!important;border:2px solid rgba(0,0,0,0.12);}
+
+/* Emoji flags (works offline) */
+.flag-emoji{
+  font-size: 22px;
+  line-height: 1;
+  margin-left: 10px;
+  flex: 0 0 auto;
+}
+
+/* --- Admin tools --- */
+.adminBar{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:8px auto 14px;
+  max-width:1200px;
+}
+.adminBar.show{
+  display:flex;
+}
+.adminBtn{
+  font-size:17px;
+  padding:12px 16px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+  background:#fff;
+  color:var(--maroon);
+}
+.adminBtn.secondary{
+  background:transparent;
+  color:#fff;
+  border:2px solid rgba(255,255,255,.65);
+}
+.adminPanel{
+  width:min(1200px,92vw);
+  margin:0 auto 16px;
+  background:#fff;
+  color:var(--text);
+  border-radius:16px;
+  padding:16px;
+  display:none;
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+.adminPanel.open{display:block;}
+.adminPanel h2{
+  margin:0 0 12px;
+  color:var(--maroon);
+  font-size:28px;
+}
+.formGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(240px,1fr));
+  gap:12px;
+}
+.formField{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.formField.full{grid-column:1 / -1;}
+.formField label{
+  font-weight:700;
+  color:#333;
+}
+.formField input,
+.formField textarea{
+  width:100%;
+  padding:12px 13px;
+  font-size:16px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-family:Arial,sans-serif;
+}
+.formField textarea{min-height:90px;resize:vertical;}
+.adminActions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.previewWrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+#imagePreview{
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(0,0,0,0.12);
+  background:#f3f3f3;
+  display:none;
+}
+.formHint{
+  font-size:14px;
+  color:#555;
+}
+.view-btn{
+  font-size:14px;
+  padding:10px 14px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  font-weight:800;
+  background:#f2e6eb;
+  color:#7d1835;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.view-btn:active{transform:scale(.98);}
+
+.manage-btn{
+  font-size:14px;
+  padding:8px 10px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
+.manage-btn.edit{
+  background:#f2e6eb;
+  color:#7d1835;
+}
+.manage-btn.delete{
+  background:#fbeaea;
+  color:#9c1f1f;
+}
+.actionCell{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+@media (max-width:820px){
+  .formGrid{grid-template-columns:1fr;}
+  .adminPanel h2{font-size:24px;}
+}
+
+
+/* --- Admin password modal --- */
+.adminStatus{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 16px;
+  border-radius:999px;
+  font-size:17px;
+  font-weight:700;
+  border:2px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  transition:opacity .35s ease, transform .35s ease, background .25s ease, color .25s ease, border-color .25s ease;
+  opacity:1;
+}
+.adminStatus.fading{
+  opacity:.45;
+  transform:translateY(-2px);
+}
+.adminStatus.unlocked{
+  background:#fff;
+  color:var(--maroon);
+  border-color:#fff;
+}
+#lockAdminBtn{display:none;}
+#lockAdminBtn.show{display:inline-block;}
+
+.modalOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:9999;
+}
+.modalOverlay.open{display:flex;}
+.passwordModal{
+  width:min(440px,92vw);
+  background:#fff;
+  color:var(--text);
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+.passwordModal h3{
+  margin:0 0 10px;
+  color:var(--maroon);
+  font-size:28px;
+}
+.passwordModal p{
+  margin:0 0 14px;
+  font-size:16px;
+  color:#444;
+}
+.passwordModal input{
+  width:100%;
+  padding:14px 15px;
+  font-size:18px;
+  border-radius:14px;
+  border:1px solid #ccc;
+  outline:none;
+}
+.passwordModal input:focus{
+  border-color:var(--maroon);
+  box-shadow:0 0 0 3px rgba(166,28,68,.15);
+}
+.passwordError{
+  min-height:22px;
+  margin-top:8px;
+  color:#9c1f1f;
+  font-weight:700;
+  font-size:14px;
+}
+.passwordActions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.hiddenManage .col-actions,
+.hiddenManage .actions-head{
+  display:none;
+}
+
+
+.syncHint{
+  width:min(1200px,92vw);
+  margin:0 auto 12px;
+  color:rgba(255,255,255,.92);
+  font-size:15px;
+  text-align:center;
+}
+.syncHint strong{color:#fff;}
+
+
+.logoTrigger{
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-drag:none;
+  transition:transform .22s ease, filter .22s ease, box-shadow .22s ease;
+  border-radius:18px;
+}
+.logoTrigger.tap-armed{
+  transform:scale(1.03);
+  filter:drop-shadow(0 10px 24px rgba(255,255,255,.18));
+}
+.logoTrigger.admin-glow{
+  animation:logoCelebration 1.8s ease;
+}
+@keyframes logoCelebration{
+  0%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(255,255,255,0));}
+  18%{transform:scale(1.06);filter:drop-shadow(0 0 18px rgba(255,255,255,.35));}
+  36%{transform:scale(1.01);}
+  55%{transform:scale(1.08);filter:drop-shadow(0 0 32px rgba(255,255,255,.55));}
+  100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(255,255,255,0));}
+}
+.adminWelcome{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:0;
+  z-index:9997;
+  transition:opacity .35s ease;
+}
+.adminWelcome.show{
+  opacity:1;
+}
+.adminWelcomeCard{
+  position:relative;
+  min-width:min(560px,90vw);
+  max-width:90vw;
+  padding:28px 34px;
+  border-radius:28px;
+  text-align:center;
+  color:#fff;
+  background:linear-gradient(135deg, rgba(166,28,68,.95), rgba(83,8,30,.95));
+  box-shadow:0 25px 90px rgba(0,0,0,.35);
+  transform:translateY(18px) scale(.96);
+  opacity:0;
+}
+.adminWelcome.show .adminWelcomeCard{
+  animation:adminCardIn 2.2s ease forwards;
+}
+.adminWelcomeTitle{
+  font-size:clamp(28px,4vw,52px);
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.adminWelcomeSub{
+  font-size:clamp(16px,2vw,22px);
+  opacity:.95;
+}
+.adminWelcomeShine{
+  position:absolute;
+  inset:-2px;
+  border-radius:30px;
+  overflow:hidden;
+}
+.adminWelcomeShine::after{
+  content:"";
+  position:absolute;
+  top:-20%;
+  left:-40%;
+  width:30%;
+  height:140%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+  transform:skewX(-18deg);
+  animation:adminShine 1.8s ease .2s 1 forwards;
+}
+@keyframes adminCardIn{
+  0%{transform:translateY(22px) scale(.94);opacity:0;}
+  15%{transform:translateY(0) scale(1.02);opacity:1;}
+  78%{transform:translateY(0) scale(1);opacity:1;}
+  100%{transform:translateY(-10px) scale(.99);opacity:0;}
+}
+@keyframes adminShine{
+  from{left:-45%;}
+  to{left:125%;}
+}
+body.admin-live::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at top center, rgba(255,255,255,.08), transparent 40%);
+  z-index:0;
+}
+.adminBar,
+.adminPanel{
+  transition:transform .35s ease, opacity .35s ease;
+}
+.adminBar.show{
+  animation:adminSlideDown .45s ease;
+}
+.adminPanel.open{
+  animation:adminPanelRise .45s ease;
+}
+@keyframes adminSlideDown{
+  from{opacity:0;transform:translateY(-10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes adminPanelRise{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+
+
+.student-row{
+  transition:opacity .28s ease, transform .28s ease, background-color .2s ease;
+}
+.student-row.row-hidden-anim{
+  opacity:0;
+  transform:translateY(8px);
+}
+.student-row.row-show-anim{
+  animation:rowReveal .42s ease both;
+}
+@keyframes rowReveal{
+  from{opacity:0;transform:translateY(16px) scale(.99);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.student-row td{
+  touch-action:pan-y;
+}
+.view-btn, .manage-btn{
+  cursor:pointer;
+}
+
+.detailOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.56);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  z-index:9997;
+  backdrop-filter:blur(4px);
+}
+.detailOverlay.open{display:flex;}
+.detailModal{
+  width:min(860px,96vw);
+  max-height:min(88vh,920px);
+  overflow:auto;
+  background:#fff;
+  color:var(--text);
+  border-radius:28px;
+  box-shadow:0 26px 90px rgba(0,0,0,.28);
+  transform:translateY(18px) scale(.98);
+  opacity:0;
+}
+.detailOverlay.open .detailModal{
+  animation:detailPop .35s ease forwards;
+}
+@keyframes detailPop{
+  to{transform:translateY(0) scale(1);opacity:1;}
+}
+.detailTop{
+  display:grid;
+  grid-template-columns:160px 1fr;
+  gap:22px;
+  padding:26px 26px 18px;
+  align-items:center;
+  background:linear-gradient(135deg, rgba(166,28,68,.08), rgba(166,28,68,.02));
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.detailPhoto{
+  width:160px;
+  height:160px;
+  border-radius:24px;
+  object-fit:cover;
+  border:3px solid rgba(166,28,68,.14);
+  background:#f3f3f3;
+}
+.detailPhoto.placeholder{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:64px;
+}
+.detailEyebrow{
+  color:var(--maroon);
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:13px;
+  margin-bottom:8px;
+}
+.detailName{
+  font-size:38px;
+  line-height:1.05;
+  color:var(--maroon);
+  margin:0 0 12px;
+}
+.detailBadges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.detailBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+  background:#f6eef1;
+  color:#7d1835;
+  font-weight:700;
+}
+.detailBody{
+  padding:22px 26px 26px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.detailCard{
+  background:#faf7f8;
+  border:1px solid rgba(166,28,68,.08);
+  border-radius:20px;
+  padding:18px;
+}
+.detailCard.full{grid-column:1 / -1;}
+.detailLabel{
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#7d1835;
+  font-weight:800;
+  margin-bottom:8px;
+}
+.detailValue{
+  font-size:20px;
+  color:#222;
+  line-height:1.35;
+}
+.detailClose{
+  position:absolute;
+  top:18px;
+  right:18px;
+  width:46px;
+  height:46px;
+  border:none;
+  border-radius:50%;
+  background:#fff;
+  color:var(--maroon);
+  font-size:28px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+.detailModalWrap{position:relative; width:min(860px,96vw); max-width:96vw;}
+@media (max-width:820px){
+  .detailTop{grid-template-columns:1fr;justify-items:center;text-align:center;}
+  .detailBody{grid-template-columns:1fr;}
+  .detailName{font-size:30px;}
+  .detailPhoto{width:128px;height:128px;}
+}
+
+
+
+/* --- Premium top hero background --- */
+.heroBg{
+  position:absolute;
+  top:0;left:0;right:0;
+  height:min(62vh, 560px);
+  min-height:420px;
+  overflow:hidden;
+  z-index:0;
+  pointer-events:none;
+}
+.heroBg::before{
+  content:"";
+  position:absolute;
+  inset:-18px;
+  background-image:url('assets/hero.webp');
+  background-size:cover;
+  background-position:center center;
+  filter:blur(6px) brightness(.58) saturate(.95);
+  transform:scale(1.06);
+  animation:heroSlowZoom 22s ease-in-out infinite alternate;
+}
+.heroBg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to bottom, rgba(24,8,15,.34) 0%, rgba(83,8,30,.36) 22%, rgba(166,28,68,.60) 58%, rgba(166,28,68,.96) 100%),
+    radial-gradient(circle at 50% 12%, rgba(255,255,255,.11), transparent 34%);
+}
+@keyframes heroSlowZoom{
+  from{transform:scale(1.06) translateY(0px);}
+  to{transform:scale(1.11) translateY(-6px);}
+}
+header,.controls,table,.adminPanel,.adminBar,.syncHint{position:relative;z-index:1;}
+.adminWelcome{z-index:9997;}
+.detailOverlay{position:fixed !important; inset:0; z-index:9999;}
+header{padding-top:18px;}
+.controls{padding-top:4px;}
+.metaRow{text-shadow:0 2px 10px rgba(0,0,0,.18);}
+#yearButtons{margin-top:10px;}
+.searchWrap{box-shadow:0 12px 30px rgba(0,0,0,.14);border-radius:14px;}
+.fsBtn{backdrop-filter:blur(2px);}
+
+/* Password modal: keep fully visible */
+.modalOverlay{align-items:flex-start;overflow-y:auto;}
+.passwordModal{margin:clamp(14px,5vh,52px) auto 24px;max-width:min(440px,92vw);}
+@media (max-width:820px){
+  .heroBg{height:470px;min-height:360px;}
+  .passwordModal{margin:14px auto 18px;}
+}
+
+</style>
+</head>
+<body>
+<div class="heroBg" aria-hidden="true"></div>
+<header>
+<img id="logoTrigger" class="logoTrigger" alt="Haileybury Almaty Logo" src="assets/logo.webp"/>
+<h1>Global University Destinations</h1>
+</header>
+<div class="controls">
+<div class="searchRow">
+<div class="searchWrap">
+<svg aria-hidden="true" fill="none" viewbox="0 0 24 24">
+<path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" opacity=".7" stroke="black" stroke-width="2"></path>
+<path d="M16.5 16.5 21 21" opacity=".7" stroke="black" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+<input id="search" placeholder="Search student / university / notes" type="text"/>
+</div>
+<button class="fsBtn" id="fsBtn" type="button">Fullscreen</button>
+</div>
+<div class="metaRow">
+<div id="countLabel">Showing 0 of 0</div>
+<div id="selectedLabel"></div>
+</div>
+
+<div class="adminBar">
+  <button id="toggleAdminBtn" class="adminBtn" type="button">Add Student 🔒</button>
+  <button id="exportBtn" class="adminBtn secondary" type="button">Refresh Data 🔒</button>
+  <button id="importBtn" class="adminBtn secondary" type="button">Sync Now 🔒</button>
+  <button id="lockAdminBtn" class="adminBtn secondary" type="button">Lock Admin</button>
+  <input id="importFile" type="file" accept=".json,application/json" style="display:none"/>
+</div>
+
+<div id="passwordOverlay" class="modalOverlay" aria-hidden="true">
+  <div class="passwordModal" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
+    <h3 id="passwordTitle">Admin access</h3>
+    <p>Enter the admin password to use Add, Edit, Delete, or Sync.</p>
+    <input id="passwordInput" type="password" placeholder="Password"/>
+    <div id="passwordError" class="passwordError"></div>
+    <div class="passwordActions">
+      <button id="passwordCancelBtn" class="adminBtn secondary" type="button" style="color:var(--maroon); border-color:rgba(166,28,68,.25);">Cancel</button>
+      <button id="passwordSubmitBtn" class="adminBtn" type="button">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<section id="adminPanel" class="adminPanel" aria-label="Add or edit student">
+  <h2 id="formTitle">Add New Student</h2>
+  <div class="formGrid">
+    <div class="formField">
+      <label for="studentName">Student name</label>
+      <input id="studentName" type="text" placeholder="e.g. Aisha Smith"/>
+    </div>
+    <div class="formField">
+      <label for="gradYear">Graduation year</label>
+      <input id="gradYear" type="number" placeholder="e.g. 2027"/>
+    </div>
+    <div class="formField">
+      <label for="universityName">University / destination</label>
+      <input id="universityName" type="text" placeholder="e.g. NYU Abu Dhabi"/>
+    </div>
+    <div class="formField">
+      <label for="countryName">Country or region</label>
+      <input id="countryName" type="text" placeholder="e.g. UAE"/>
+    </div>
+    <div class="formField full">
+      <label for="studentNotes">Notes</label>
+      <textarea id="studentNotes" placeholder="e.g. Economics, scholarship, first HAL student there"></textarea>
+    </div>
+    <div class="formField full">
+      <label for="studentImage">Profile picture</label>
+      <div class="previewWrap">
+        <input id="studentImage" type="file" accept="image/*"/>
+        <img id="imagePreview" alt="Student photo preview"/>
+        <span class="formHint">You can upload a photo from your computer. It will be compressed and saved to the shared directory.</span>
+      </div>
+    </div>
+  </div>
+  <div class="adminActions">
+    <button id="saveStudentBtn" class="adminBtn" type="button">Save Student</button>
+    <button id="clearFormBtn" class="adminBtn secondary" type="button">Clear Form</button>
+  </div>
+</section>
+
+<div id="yearButtons"></div>
+</div>
+<table>
+<thead>
+<tr>
+<th style="width:110px;">Year</th>
+<th style="width:260px;">Name</th>
+<th>University</th>
+<th style="width:360px;">Notes</th>
+<th style="width:120px;">View</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+
+
+
+
+<div id="detailOverlay" class="detailOverlay" aria-hidden="true">
+  <div class="detailModalWrap">
+    <button id="detailCloseBtn" class="detailClose" type="button" aria-label="Close">×</button>
+    <div class="detailModal">
+      <div class="detailTop">
+        <div id="detailPhoto" class="detailPhoto placeholder">🎓</div>
+        <div>
+          <div class="detailEyebrow">Graduate destination</div>
+          <h2 id="detailName" class="detailName">Student Name</h2>
+          <div id="detailBadges" class="detailBadges"></div>
+        </div>
+      </div>
+      <div class="detailBody">
+        <div class="detailCard">
+          <div class="detailLabel">University</div>
+          <div id="detailUniversity" class="detailValue"></div>
+        </div>
+        <div class="detailCard">
+          <div class="detailLabel">Country</div>
+          <div id="detailCountry" class="detailValue"></div>
+        </div>
+        <div class="detailCard full">
+          <div class="detailLabel">Notes</div>
+          <div id="detailNotes" class="detailValue"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="adminWelcome" class="adminWelcome" aria-hidden="true">
+  <div class="adminWelcomeCard">
+    <div class="adminWelcomeShine"></div>
+    <div class="adminWelcomeTitle">Admin Mode</div>
+    <div class="adminWelcomeSub">Unlocked successfully</div>
+  </div>
+</div>
+
+<button id="backToTopBtn" class="backToTop" type="button" aria-label="Back to top"><span>↑</span></button>
+<script>
+(function(){
+  const SUPABASE_URL = 'https://vqbqayiqmkiknuikftck.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxYnFheWlxbWtpa251aWtmdGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1OTU5NDksImV4cCI6MjA5MjE3MTk0OX0.tG2oSS0uGzqvqvx0BoFYsJ5H7wP8nigBm-376h57XBU';
+  const ADMIN_PASSWORD_DIGEST = 'f5c85541f9d32d74bdbfc73dee222047ab16910da8e6e0e2d5be92f08af4dc63';
+  async function matchesAdminPassword(value){
+    const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+    return Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, '0')).join('') === ADMIN_PASSWORD_DIGEST;
+  }
+  let supabase = null;
+  let clientPromise = null;
+  const photoOverrides = new Map();
+  const CACHE_KEY = 'hal-directory-v2';
+
+  async function timedFetch(input, init, timeoutMs = 12000){
+    const controller = new AbortController();
+    const upstream = init && init.signal;
+    const abort = () => controller.abort();
+    if (upstream) {
+      if (upstream.aborted) abort();
+      else upstream.addEventListener('abort', abort, {once:true});
+    }
+    const timer = setTimeout(abort, timeoutMs);
+    try { return await fetch(input, {...(init || {}), signal:controller.signal}); }
+    finally {
+      clearTimeout(timer);
+      if (upstream) upstream.removeEventListener('abort', abort);
+    }
+  }
+
+  function ensureCloudClient(){
+    if (supabase) return Promise.resolve(supabase);
+    if (clientPromise) return clientPromise;
+    clientPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'assets/supabase.js';
+      script.async = true;
+      const timer = setTimeout(() => {
+        script.remove();
+        clientPromise = null;
+        reject(new Error('Database client timed out.'));
+      }, 10000);
+      script.onload = () => {
+        clearTimeout(timer);
+        try {
+          supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            global:{fetch:timedFetch}, auth:{persistSession:false,autoRefreshToken:false}
+          });
+          resolve(supabase);
+        } catch (e) { clientPromise = null; reject(e); }
+      };
+      script.onerror = () => {
+        clearTimeout(timer);
+        script.remove();
+        clientPromise = null;
+        reject(new Error('Database client unavailable.'));
+      };
+      document.head.appendChild(script);
+    });
+    return clientPromise;
+  }
+
+  const EMBEDDED_STUDENTS = [{"id":"09c5e832-75b1-4c81-a38a-c63c49f0a5ed","name":"Aldiyar Toibazarov","year":"2026","university":"NYU","country":"USA","notes":"NYU ED | First year abroad in Florence, Italy. Global Studies","flag":"🇺🇸","photo_path":""},{"id":"fbb43499-70c2-45ac-b3b4-c9abbf07d2cb","name":"Ali Akhmedov","year":"2026","university":"Cambridge, Selwyn College","country":"UK","notes":"School Captain 2026 | Chemical Engineering & Biotechnology | Also accepted into Bath, Imperial, UCL and Birmingham","flag":"🇬🇧","photo_path":""},{"id":"58c86108-43fa-497f-9a9a-76898a82b791","name":"Alibek Alzhanov","year":"2026","university":"gap year","country":"","notes":"Wait List, Brown. Chemical Engineering\nDo extra reseach and resit A Level exams\nHaileybury Basketball Star!","flag":"","photo_path":""},{"id":"cc94faba-ba24-43c4-b4c9-e6fef7a7ba8f","name":"Alikhan Medeuov","year":"2026","university":"Warwick","country":"UK","notes":"Mathematics, Operational Research, Statistics, Economics (MORSE)\nAlso accepted at Kings, Durham and Bath","flag":"🇬🇧","photo_path":""},{"id":"23155edf-2af6-4c96-aa58-ca7ff9758d98","name":"Alikhan Yessen","year":"2026","university":"Northwestern","country":"USA","notes":"Economics. \nAlso admitted to LSE, UCLA, NYU, Warwick and University of Virginia","flag":"🇺🇸","photo_path":""},{"id":"c4903fbc-5b93-4658-af42-b9036f1cfbf0","name":"Aliya Tlebaldy","year":"2026","university":"UC San Diego","country":"USA","notes":"Economics, Business.\nOffered places in: George Washington, Warwick, Northeastern, UC San Diego, Syracuse, Penn State, Bentley, Purdue, UC Santa Barbara and Fordham.","flag":"🇺🇸","photo_path":""},{"id":"26893a26-c0c6-43c8-92fb-4dbb4c1ec3bb","name":"Almansur Samat","year":"2026","university":"University of Warwick","country":"UK","notes":"Accounting and Finance. \nAlso admitted to: Durham, Bath, Edinburgh, Wisconsin Madison and Penn State,","flag":"🇬🇧","photo_path":""},{"id":"445d15f6-0afd-40f4-b5fe-1ff42805e5e9","name":"Alnur Shayekin","year":"2026","university":"NYU Tandon School of Engineering","country":"USA","notes":"Mechanical Engineering;\nAlso admitted to: University of Sheffield, Warwick, and Northeastern","flag":"🇺🇸","photo_path":""},{"id":"ca27f6da-721d-4742-b0da-cda4473f0b2c","name":"Amirlan Amanzholov","year":"2026","university":"MIT","country":"USA","notes":"Maths. Full Financial Aid by MIT\nAlso admitted to: Harvard, Caltech, Stanford, Carnegie Mellon, U of Toronto, Imperial, Edinburgh, Bristol, HKUST, Nazarbayev.\nIMO Silver Medal winner 2 times","flag":"🇺🇸","photo_path":""},{"id":"6368ea29-3fd1-4740-b8e9-447b317ddd58","name":"Angelina Lanskikh","year":"2026","university":"CUHK dual degree, Hong Kong and Shenzhen","country":"Hong Kong, China","notes":"Maths and Engineering\nAlso admitted to UBC\nHead of HALSAT 2026","flag":"","photo_path":""},{"id":"58430879-09ec-41db-9899-b9afd223a64f","name":"Anita Suleimanova","year":"2026","university":"Northeastern University","country":"USA","notes":"International Business.\nAlso admitted to: York University Canada, Sullfolk, Kingston, Northampton, Queen Mary, and Regents","flag":"🇺🇸","photo_path":""},{"id":"50d657fb-39ba-4e24-a21b-9e0debb562ef","name":"Antonia Millo","year":"2026","university":"Universidad de Murcia","country":"Spain","notes":"Bellas Artes (Fine Arts)\nWill learn Spanish intensively to attend university. \nAlso admitted to Arts Glasgow and Edinburgh","flag":"🇪🇸","photo_path":""},{"id":"76333bad-8232-43c2-b068-67248b65c561","name":"Arnay Mukhtar","year":"2026","university":"Warwick","country":"UK","notes":"Finance\nAdmitted to HKUST Business school, Bath, and UMich school of engineering, Ross waitlist.","flag":"🇬🇧","photo_path":""},{"id":"a579fd54-d255-49de-9e13-b8f11d813241","name":"Arnur Oshak","year":"2026","university":"Oxford, Worcester College","country":"UK","notes":"Electrical Engineering, MSc. (4 years)\nAlso admitted to Imperial, Warwick, and Bath","flag":"🇬🇧","photo_path":""},{"id":"acdb7a40-2c26-434d-a538-a825ae1028e5","name":"Arsenii Gubanov","year":"2026","university":"HKUST","country":"Hong Kong","notes":"Mechanical and Aerospace Engineering.\nBelt and Road Scholarship nomination\nStar Volleyball player","flag":"🇭🇰","photo_path":""},{"id":"cd999f37-12fb-4e62-b782-b605de4b6b1c","name":"Arslan Bodanov","year":"2026","university":"Bocconi","country":"Italy","notes":"International Economics & Management\nAlso admitted to: Durham and Leeds","flag":"🇮🇹","photo_path":""},{"id":"4d427ae0-b67a-44f6-983d-093fc07e9e63","name":"Arslan Sabali","year":"2026","university":"Hong Kong Metropolitan University","country":"Hong Kong","notes":"Business","flag":"🇭🇰","photo_path":""},{"id":"e3d28639-7237-441d-8cc7-62596c0d9b63","name":"Aruzhan Muratbekova","year":"2026","university":"Manchester School of Architecture","country":"UK","notes":"Architecture: joint degree with Manchester University and Manchester Met.\nAlso accepted into U of Toronto: Architecture (Daniels School), and Commerce, Bath, Poly U (Hong Kong)\nGreat musician","flag":"🇬🇧","photo_path":""},{"id":"7aeafa71-b201-4d76-bc5e-5895dd4daa61","name":"Bexultan Bagdat","year":"2026","university":"UCL","country":"UK","notes":"Economics and History\nAlso admitted to Kings College","flag":"🇬🇧","photo_path":""},{"id":"d4e9fc99-3770-42b9-a7fc-61eb69438f8e","name":"Cassius Kirton","year":"2026","university":"Newcastle","country":"UK","notes":"Psychology\nAlso admitted to: Derby, Lancaster, and Liverpool\nHaileybury's best Basketball and Track and Field athlete.","flag":"🇬🇧","photo_path":""},{"id":"493049c9-8133-4032-a55d-81dd69b3e2e8","name":"Danial Sabyrbay","year":"2026","university":"Waterloo","country":"Canada","notes":"Mathematical Physics Co-op Program 4.5 years\nAlso admitted to: St Andrews, Durham, U of T","flag":"🇨🇦","photo_path":""},{"id":"15e5851c-aff2-43be-872f-2d9d29e30b5a","name":"Daniya Botabayeva","year":"2026","university":"Bocconi","country":"Italy","notes":"International Economics & Finance\nAlso admitted to Warwick, King's, Manchester, UCLA, UCSD\nHAL MUN Sec Gen 2025/26, Bartle Frere House Captain, Marketing Ambassador","flag":"🇮🇹","photo_path":""},{"id":"8a42be44-1b9e-44a5-a44c-97ee0ea4b869","name":"Darina Iminova","year":"2026","university":"Gap year","country":"Hong Kong","notes":"Accepted to HKUST, but without funding.  Computer Science, Machine Learning\nWaitlisted by Princeton, Carnegie Mellon Qatar, Reed and Bryn Mawr\nLeader of HALSAT 2026\nWill resit exams and reapply next year","flag":"🇭🇰","photo_path":""},{"id":"52322de8-9bd7-4111-96b8-d94737a0e0d8","name":"David Shalumov","year":"2026","university":"Reichman University","country":"Israel","notes":"Criminology and Social Psychology\nAlso admitted to : York, Bath, Chichester, York St, John","flag":"","photo_path":""},{"id":"9180ae1a-8c8e-4f57-add4-b485988f1b1b","name":"Dayana Amirgaliyeva","year":"2026","university":"gap year","country":"","notes":"Economics\nWill resit exams, do extra research and reapply next year","flag":"","photo_path":""},{"id":"15832574-47ce-4e77-ab18-a7bb20db9837","name":"Donald III\tTownsend","year":"2026","university":"Florida State University","country":"USA","notes":"Engineering\nAlso admitted to Wisconsin-Madision, Purdue\nMaster of Debate and MUN","flag":"🇺🇸","photo_path":""},{"id":"01cc9052-51e7-4423-a943-b55c8ada01d9","name":"Eldana Galiyeva","year":"2026","university":"University van Amsterdam","country":"Netherlands","notes":"Psychology\nAlso admitted to: York, Leeds, Edinburgh","flag":"🇳🇱","photo_path":""},{"id":"f94ea86d-1fee-41f4-8ee3-cc5430d59ff4","name":"Ilyas Nugumanov","year":"2026","university":"Hong Kong Polytechnic University","country":"Hong Kong","notes":"Computer Science. Full Scholarship\nAlso admitted to: HKUST, and City U Hong Kong\nMountain climbing and arm wrestling champion","flag":"🇭🇰","photo_path":""},{"id":"a72b6529-f58a-4ba6-bac4-8d8cc8725d88","name":"Iskander Saifiddinov","year":"2026","university":"Erasmus University","country":"Netherlands","notes":"Erasums Business School.\nAlso admitted to HKUST, Tilburg, Maastricht (NL), IE (Spain), Sydney (Australia)","flag":"🇳🇱","photo_path":""},{"id":"add0c1af-2cfb-45f8-b795-ef9e940ced36","name":"Iskander Shyngyssov","year":"2026","university":"NYU","country":"USA","notes":"Arts and Science, Economics. New York City. Pre Law\nEarly Decision admission","flag":"🇺🇸","photo_path":""},{"id":"c160f21d-8981-46b0-b476-22a0158632ba","name":"Jimin Na","year":"2026","university":"Korea University","country":"Korea","notes":"One of the top university in Korea in the SKY ranking. \nstudying Chemistry, Maths.\nHead of Kipling. Top SAT score 1570 Best in Haileybury.\nAdmitted to: Cambridge, Leeds, and Southampton. 4 A* and EPQ A*","flag":"","photo_path":""},{"id":"84738ecd-b621-4549-8fe7-71600dd8a390","name":"Jin Soo Pak","year":"2026","university":"UCL","country":"UK","notes":"History and Law\nAlso admitted to Kings, Bristol and Durham","flag":"🇬🇧","photo_path":""},{"id":"bb2ceeeb-f078-4dcd-b144-8a22bea2b608","name":"Kamila Aubakirova","year":"2026","university":"Central St Martins, University Arts London","country":"UK","notes":"Fine Arts\nAlso admitted to UCL and Kingson","flag":"🇬🇧","photo_path":""},{"id":"cf588d4a-2bb5-4a28-a936-c48a5564a67f","name":"Koblan Baimen","year":"2026","university":"Bocconi","country":"Italy","notes":"International Economics & Finance. \nAlso admitted to Emory, Warwick, and Bath","flag":"🇮🇹","photo_path":""},{"id":"63b82d3f-d7c6-485c-9020-af383da2dc84","name":"Madali Issabek","year":"2026","university":"Middle Eastern Technical University","country":"Turkey","notes":"Financial Technology. 75% scholarship\nAlso admitted to HKUST Guangzhou, Cardiff (KZ), Syracuse","flag":"🇹🇷","photo_path":""},{"id":"eb5b76be-f0c4-44b9-907c-4190f3c9b20f","name":"Mansura Galymzhanova","year":"2026","university":"St Andrews","country":"UK","notes":"Accepted to study at St Andrews, Physics and Astronomy. First year (4 year program)\nAlso accepted: Foundation Year, Aerospace Engineering (Bristol)\nContinued into Y13 program and will reapply in 2027","flag":"🇬🇧","photo_path":""},{"id":"1096b1f0-a06a-4ea7-8f4c-0bc895438a2f","name":"Marua Kopbayeva","year":"2026","university":"King's College London (deferred for one year)","country":"UK","notes":"Politics, Philosphy, Economics\nAdmitted to McGill (Canada), Queen Mary, Kingston\nGap year working in crypto banking, Vietnam","flag":"🇬🇧","photo_path":""},{"id":"7659f309-9a55-4259-ac6b-2ae8bf004f5d","name":"Mereyli Baisariyeva","year":"2026","university":"Duke University & Duke Kunshan University","country":"China, USA","notes":"School Captain 2026 | Biomedical Engineering | Full Merit Scholarship | Also admitted to: UC Berkeley (Early: Regents' & Chancellor's Award Finalist), NYU, BU (Kilachand Honors), HKUST GZ, UCSD, UCI, Purdue","flag":"","photo_path":""},{"id":"e6af26d3-5a8f-422b-8e3b-364d1c70cd0a","name":"Milana Alimbayeva","year":"2026","university":"Nottingham (maybe)","country":"UK","notes":"Art, Photography\nAdmitted to Ravensbourne and Kingston","flag":"🇬🇧","photo_path":""},{"id":"852f9b43-471e-48f4-9905-73f48c09ec56","name":"Muhammad (Rafi) Wijayanto","year":"2026","university":"University of Toronto (St George)","country":"Canada","notes":"Economics\nAlso admitted to: US San Diego, UC Davis, UBC, Bath, Manchester\nDebate and MUN master","flag":"🇨🇦","photo_path":""},{"id":"8c3a8f63-c59e-4a64-9eca-80c778ea7e66","name":"Nuray Nurymbet","year":"2026","university":"Sabanci University","country":"Turkey","notes":"Psychology/ Social Sciences\nAlso admitted to Groningen, Manchester, York, Queens Belfast, Bristol, Uv Amsterdam","flag":"🇹🇷","photo_path":""},{"id":"97af52a7-e78f-4173-aa8d-1d5e4a3b7f24","name":"Rem Mukushev","year":"2026","university":"University of Toronto (Scarborough)","country":"Canada","notes":"Computer Science | Also received offers from St. Andrews, Bath, York, Queen's University Belfast and Lancaster","flag":"🇨🇦","photo_path":""},{"id":"2f87d56d-5495-454e-8bea-d26abedb884a","name":"Samina Kholmuradova","year":"2026","university":"Edinburgh","country":"UK","notes":"Social Studies/Economics\nAlso admitted to: Kings College, Warwick, City and Bath","flag":"🇬🇧","photo_path":""},{"id":"7e08ebfd-6823-4cd6-99fa-3755ff0a46ea","name":"Sanzhar Karbuzov","year":"2026","university":"Beijing University of Technology","country":"China","notes":"Computer Science. Full Scholarship\nAlso admitted to HKU","flag":"🇨🇳","photo_path":""},{"id":"d7c3f25f-1abb-42d5-9aef-3e2ebbf6c450","name":"Temirlan Taskaranov","year":"2026","university":"Rutgers University, Camden","country":"USA","notes":"Maths\nAlso admitted to New School, New York","flag":"🇺🇸","photo_path":""},{"id":"096b79ca-1eb7-4479-8460-23d6c908ada2","name":"Tengri-Gani Alibekuly","year":"2026","university":"Kings College London","country":"UK","notes":"Physics\nAlso admitted to St. Andrews, Warwick","flag":"🇬🇧","photo_path":""},{"id":"f54ef9be-8317-4c6a-9d8e-e4d9336003b1","name":"Timur Murat","year":"2026","university":"Ecole Polytechnique","country":"France","notes":"Maths\nAlso admitted to Imperial, Warwich, St Andrews, UCL\nIMO 2026","flag":"🇫🇷","photo_path":""},{"id":"3f2e2db8-af6e-41b8-af84-4e05b0c2fc8f","name":"Uliana Timokhina","year":"2026","university":"Glasgow","country":"UK","notes":"Human Biology\nAlso admitted to: Imperial, Manchester, Kings, UCL\nScholarship winner at Glasgow","flag":"🇬🇧","photo_path":""},{"id":"a042cc30-69a2-4fdf-a5a0-13b810ff9ce2","name":"Yerdulat Namazaly","year":"2026","university":"Northeastern","country":"USA","notes":"Economics and Business Administration\nAlso admitted to Penn State, Bentley, Nazarbayev","flag":"🇺🇸","photo_path":""},{"id":"1f5a704c-fc1c-4d11-9dab-45822bd5d69c","name":"Zhamilya Batyrbekova","year":"2026","university":"Kings College London","country":"UK","notes":"Biochemistry\nAlso admitted to: Edinburgh","flag":"🇬🇧","photo_path":""},{"id":"89461080-5657-464c-9f90-ee632b8f3abc","name":"Zhangir Meshitbek","year":"2026","university":"Northeastern","country":"USA","notes":"Industrial Engineering\nAlso admitted to: Bath, Warwick, City, Penn State, Lehigh, UIUC, Bocconi","flag":"🇺🇸","photo_path":""},{"id":"7752b38d-e329-402a-8161-7fdf41f7261b","name":"Zhaniya Kenzhegaliyeva","year":"2026","university":"University of Pennsylvania, Wharton School","country":"USA","notes":"Economics, Finance\nEarly Decision admission. Full ride scholarship","flag":"🇺🇸","photo_path":""},{"id":"828ada01-3854-4c95-a2f8-71a1706bc619","name":"Abylay Iskandirov","year":"2025","university":"Michigan State University","country":"USA","notes":"Business and Economics","flag":"🇺🇸","photo_path":""},{"id":"b2236fbe-e204-411b-bffd-91752abdfba8","name":"Aigerim Sovetkhan","year":"2025","university":"UAL Fashion Management","country":"UK","notes":"Fashion Management","flag":"🇬🇧","photo_path":""},{"id":"5556d271-7d45-4e33-b86b-6dbf0ccfc525","name":"Aiisha Kuziyeva","year":"2025","university":"Melbourne University","country":"Australia","notes":"First HAL in Melbourne, Australia","flag":"🇦🇺","photo_path":""},{"id":"47ef6f3f-a98f-4745-b277-1be5d88fbaa0","name":"Aissulu Tussenova","year":"2025","university":"UC San Diego","country":"USA","notes":"Business","flag":"🇺🇸","photo_path":""},{"id":"991cb0e1-c159-4649-a053-be23d99b45c3","name":"Alibek Karsybekov","year":"2025","university":"University of London, School of Oriental and African Studies SOAS","country":"UK","notes":"Double Major, International Relations and Economics","flag":"🇬🇧","photo_path":""},{"id":"2e79fb69-c0f7-4509-be06-3b0b82c2c2d9","name":"Alikhan Sarsenov","year":"2025","university":"Bocconi University, Italy","country":"Italy","notes":"Finance","flag":"🇮🇹","photo_path":""},{"id":"65629b57-c694-4b86-ab90-a002016a9912","name":"Alikhan Serikuly","year":"2025","university":"Brown University","country":"USA","notes":"Hall of Fame, Ivy League, Full Financial Aid. Chemistry","flag":"🇺🇸","photo_path":""},{"id":"7caf9211-8540-411a-b1e2-c115d91421d0","name":"Alina Ishkulova","year":"2025","university":"St Andrews College","country":"UK","notes":"Hall of Fame, Highly ranked UK University","flag":"🇬🇧","photo_path":""},{"id":"7d2eae77-1673-4315-aaae-435b4281fd7e","name":"Alina Turaliyeva","year":"2025","university":"Kings College London","country":"UK","notes":"Humanities","flag":"🇬🇧","photo_path":""},{"id":"2b87f055-33ee-4ef9-96b7-acad0c21dff9","name":"Altai Alaubek Avdil","year":"2025","university":"HKUST Guangzhou","country":"Hong Kong","notes":"Gap Year. Winner of Robotics competitions","flag":"🇭🇰","photo_path":""},{"id":"7f4b5f5c-06a5-40be-a48d-a6871fda8533","name":"Ameli Kanasheva","year":"2025","university":"Pennsylvania State University, USA","country":"USA","notes":"Engineering","flag":"🇺🇸","photo_path":""},{"id":"f9b8f61c-846d-4784-acd8-f301c32dce1c","name":"Amina Beiganova","year":"2025","university":"Poly University Hong Kong","country":"Hong Kong","notes":"Full Scholarship","flag":"🇭🇰","photo_path":""},{"id":"e81378f8-8d89-4903-8b21-a04253cb79b4","name":"Amina Meirkhan","year":"2025","university":"UC San Diego","country":"USA","notes":"Bio Engiineering","flag":"🇺🇸","photo_path":""},{"id":"a0f2c08a-90d2-4df2-994f-c638ebe53b7d","name":"Andre Harazim","year":"2025","university":"Kings College London, UK","country":"UK","notes":"School Captain, Economics","flag":"🇬🇧","photo_path":""},{"id":"06b06bf9-0093-4a35-b00a-f76d86ebc123","name":"Arailym (Arai) Zholdassova","year":"2025","university":"West London Theatre","country":"UK","notes":"Our first actress","flag":"🇬🇧","photo_path":""},{"id":"24086a2e-1708-4300-8db9-87323b6e80e8","name":"Aray Kassenova","year":"2025","university":"Ecole Polytechnique (Paris)","country":"France","notes":"Gap Year. Hall of Fame,Winner of European Math Olympiads. full Scholarship. First HAL in top French STEM university","flag":"🇫🇷","photo_path":""},{"id":"bfde774e-68d4-4c3b-9f88-3361f3fd98bb","name":"Arnur Jumabekov","year":"2025","university":"Chinese University of Hong Kong","country":"Hong Kong","notes":"Gap year. Full Scholarship at CUHK. Winner of International Science and Engineering Fair 2025","flag":"🇭🇰","photo_path":""},{"id":"1cbc9c9c-1125-4965-8a8e-4d0d2729909e","name":"Arsen Syrgabayev","year":"2025","university":"University of Warwick","country":"UK","notes":"Electrical Engineering","flag":"🇬🇧","photo_path":""},{"id":"a7eafcb6-9b7b-4a25-9f25-c06549a2db56","name":"Aruzhan Kul-Mukhammed","year":"2025","university":"UC Berkeley","country":"USA","notes":"School Captain, Hall of Fame, Top World University. Biomedicine","flag":"🇺🇸","photo_path":""},{"id":"20cd119d-d9c7-4cef-b7fb-6641af0dc874","name":"Ayana Dugabek","year":"2025","university":"Bocconi University, Italy","country":"Italy","notes":"Hall of Fame, Bocconi Women's Scholarship","flag":"🇮🇹","photo_path":""},{"id":"b23537aa-c023-48b1-9bd4-07ba81486b55","name":"Ayanat Assembek","year":"2025","university":"UAL","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"032a7110-9195-4478-b0f0-e1b03367e846","name":"Azhinissakhan (Ajinisa) Gabbassova","year":"2025","university":"University of London, School of Oriental and African Studies SOAS","country":"UK","notes":"Political Sciences","flag":"🇬🇧","photo_path":""},{"id":"93888f6a-7bee-4f2f-9a14-c187ee97294e","name":"Dameli Kuantkan","year":"2025","university":"Manchester University","country":"UK","notes":"Environmental and Social Studies","flag":"🇬🇧","photo_path":""},{"id":"3a781130-2a2b-44de-acc0-d5108563ad9f","name":"Damilya (Mark) Voogdt","year":"2025","university":"Kings College London","country":"UK","notes":"Social Studies","flag":"🇬🇧","photo_path":""},{"id":"a34689e6-a0a6-4418-b01b-ed14f6d00aaa","name":"Damir Aliyev","year":"2025","university":"Florida International University","country":"USA","notes":"Early entrance to FIU","flag":"🇺🇸","photo_path":""},{"id":"14a5047b-5fd6-4e41-9e05-03baca49ed4d","name":"Darina Utemuratova","year":"2025","university":"University College London (UCL) (UCL)","country":"UK","notes":"Highly ranked world university","flag":"🇬🇧","photo_path":""},{"id":"e51c2f04-1959-4496-bb90-e295431e6a4b","name":"Dmitry Nolan","year":"2025","university":"Manchester University","country":"UK","notes":"Maths","flag":"🇬🇧","photo_path":""},{"id":"883687c2-1c09-4a74-b403-791dca3235be","name":"German Bartosh","year":"2025","university":"Warwick","country":"UK","notes":"gap year, Foundation","flag":"🇬🇧","photo_path":""},{"id":"1c0bf997-8f9e-4cab-93bf-eedce8e31034","name":"Ibragim Satvaldy","year":"2025","university":"University of Toronto, Canada","country":"Canada","notes":"Top ranked World University. Economics and Maths","flag":"🇨🇦","photo_path":""},{"id":"91eb4e7f-e601-4c16-84df-e4b22afacc77","name":"Islam Idrissov","year":"2025","university":"University College London (UCL), UK","country":"UK","notes":"Hall of Fame - The Bartlett School of Architecture","flag":"🇬🇧","photo_path":""},{"id":"d2e12160-9f6d-4138-8faf-d1438ede8b9b","name":"Laura Ishmuratova","year":"2025","university":"Parsons New School New York","country":"USA","notes":"Theatre, acting","flag":"🇺🇸","photo_path":""},{"id":"e988790a-c543-4a8e-bd1c-df2700a7e0a6","name":"Lauren Coetzee","year":"2025","university":"Embry Riddle Florida","country":"USA","notes":"Aerospace Engineering","flag":"🇺🇸","photo_path":""},{"id":"4d9c7ed4-86be-41b5-9ecb-671071256e88","name":"Linara Kessikbayeva","year":"2025","university":"University College London (UCL), UK","country":"UK","notes":"Economics","flag":"🇬🇧","photo_path":""},{"id":"1beba76d-ac3d-4333-88b0-284a021179f8","name":"Magellan Mukhanov","year":"2025","university":"HKUST Guangzhou","country":"Hong Kong","notes":"Robotics","flag":"🇭🇰","photo_path":""},{"id":"fb2ff1c0-751d-430f-9eb4-ad70fe04421f","name":"Malika Iman","year":"2025","university":"University of British Columbia (UBC), Canada","country":"Canada","notes":"Pre Medicine","flag":"🇨🇦","photo_path":""},{"id":"e20393d2-fca1-4ecf-bb85-cb8ded630838","name":"Mansur Kainarbekov","year":"2025","university":"University College London (UCL), UK","country":"UK","notes":"Politics and Economics","flag":"🇬🇧","photo_path":""},{"id":"4ea996eb-2e85-4de0-841f-983a619448f8","name":"Miron Yurkevich","year":"2025","university":"Cambridge University (Trinity College)","country":"UK","notes":"Hall of Fame, Top World Uni and Scholarship. IMO silver medalist. Maths","flag":"🇬🇧","photo_path":""},{"id":"98e54cd2-dae8-405b-b2b7-3c061c4761b0","name":"Nazar Serazitdinov","year":"2025","university":"Oxford University (Oriel College)","country":"UK","notes":"Hall of Fame, Top World Uni. Partial scholarship. IOI silver medalist. MSc Computer Science","flag":"🇬🇧","photo_path":""},{"id":"99238931-7b8b-4120-9eeb-fa17d68ce42d","name":"Nizam Ibragimov","year":"2025","university":"Les Roches University","country":"Switzerland","notes":"Business management, Hospitality","flag":"🇨🇭","photo_path":""},{"id":"9bc1b1c0-1bf9-4d7e-bc00-fe967f32fd82","name":"Ramzan Lyukhudzayev","year":"2025","university":"City London","country":"UK","notes":"Business","flag":"🇬🇧","photo_path":""},{"id":"0c1fb8e2-a889-47ad-b314-e4deb2dcc040","name":"Rustem Zhumagaliev","year":"2025","university":"Tsinghua University","country":"China","notes":"Hall of Fame, First student at Tsinghua, a Top 10 world university. Studying Applied Maths\nGap year to study Chinese language at Beijing Language and Culture University (BLCU)","flag":"🇨🇳","photo_path":""},{"id":"4691fb44-0a18-4c2c-a19a-7e810e826923","name":"Salimkhan Seisenbayev","year":"2025","university":"KIngs College London","country":"UK","notes":"Also admitted to UCL","flag":"🇬🇧","photo_path":""},{"id":"d3efea50-202c-458e-8abf-c1beccf0d281","name":"Sara Mizuki Stockermans Munoz","year":"2025","university":"TU Delft","country":"Netherlands","notes":"Hall of Fame, Top World Uni, first for HAL. Earth Sciences Engineering","flag":"🇳🇱","photo_path":""},{"id":"66a9f04d-5055-45b8-8130-2b53e2414b9b","name":"Saule (Lucas) Talgat","year":"2025","university":"gap year","country":"","notes":"","flag":"","photo_path":""},{"id":"10e3af4a-e9af-42c1-bbd9-8e6195fc0e85","name":"Sofia Vulcano","year":"2025","university":"Sapienza Rome","country":"Italy","notes":"Italian history and culture","flag":"🇮🇹","photo_path":""},{"id":"e47af35e-5e91-4a65-9910-a588e0ec4d22","name":"Sofiya Milovanova","year":"2025","university":"KU Leuven","country":"","notes":"Engineering","flag":"","photo_path":""},{"id":"36af2148-49fa-49a0-9c30-834f1543d957","name":"Sultanali Sarsen","year":"2025","university":"Babson College","country":"USA","notes":"Business and Economics. Transferred from Penn State to USC, Tufts and Babson 2026","flag":"🇺🇸","photo_path":""},{"id":"6c0c9d6d-36a3-42d4-96cb-665f3d693cb9","name":"Taissiya Sheguy","year":"2025","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"2ec7cc52-919e-4012-ab9a-a39b4908f3d7","name":"Tatev Tovmasyan","year":"2025","university":"Leipzig University","country":"Germany","notes":"Gap Year. Admitted to Leipzig University to study Physics in 2026. Top German University in this field","flag":"🇩🇪","photo_path":""},{"id":"18d06681-e7e0-4b3f-b742-59c1db2a984e","name":"Timur Lubyantsev","year":"2025","university":"University of British Columbia (UBC), Canada","country":"Canada","notes":"Cognitive Systems","flag":"🇨🇦","photo_path":""},{"id":"c6260347-95c4-4432-929d-5885cbf812e0","name":"Timur Tsoy","year":"2025","university":"HKUST","country":"Hong Kong","notes":"Full Scholarship, Mathematics","flag":"🇭🇰","photo_path":""},{"id":"5ee43125-763e-4ebf-9c2a-39f333cd066a","name":"Yeraly Baimagambetov","year":"2025","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"775fd888-c4d0-4708-9503-76d0f4a44356","name":"Yerassyl Abilkassym","year":"2025","university":"University of British Columbia (UBC), Canada","country":"Canada","notes":"Hall of Fame, Top World University, Full International Scholarship. Engineering","flag":"🇨🇦","photo_path":""},{"id":"b7a457cc-b202-4e6a-ba22-b97d73bc7f8c","name":"Yerassyl Boranbayev","year":"2025","university":"HKUST Guangzhou","country":"Hong Kong","notes":"First HAL in HKUST GZ, Scholarhsip. Engineering","flag":"🇭🇰","photo_path":""},{"id":"f3e59d3f-b3f1-49c5-b95b-aaebb503be29","name":"Zara Talgat","year":"2025","university":"University of Warwick, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"df3b23b1-5f43-46d6-8711-0af7a84c8e04","name":"Adel Zhaxybayeva","year":"2024","university":"University College London (UCL), UK","country":"UK","notes":"Biochemistry\nAlso admitted to: USouth California, Boston University, UC San Diego, Kings College, and Warwich (50% scholarship)","flag":"🇬🇧","photo_path":""},{"id":"8b6e2b9c-7168-410b-b90d-ccc5f1b65ed2","name":"Adilzhan Atakulov","year":"2024","university":"City, University of London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"f140d304-9172-44b4-9a09-a7d654fd574b","name":"Adina Almenova","year":"2024","university":"Wellesley College","country":"USA","notes":"Hall of Fame - Best Liberal Arts College in the USA, Gap Year, Scholarship","flag":"🇺🇸","photo_path":""},{"id":"810c72af-fa35-4405-91e1-04b76369658c","name":"Aigerim Yerzhanova","year":"2024","university":"Berklee College of Music, USA","country":"USA","notes":"Professional Singer and Musician","flag":"🇺🇸","photo_path":""},{"id":"f611d520-4e23-40f7-83e6-b749563a1c45","name":"Ailin Iskandirova","year":"2024","university":"NYU","country":"USA","notes":"Previously at University of California, Santa Cruz\nEconomics","flag":"🇺🇸","photo_path":""},{"id":"590d0009-9fae-4218-bc4d-8ebe05990821","name":"Aishat Yatarova","year":"2024","university":"California Institute of Technology, USA","country":"USA","notes":"Hall of Fame, Top World University, Full Financial Aid","flag":"🇺🇸","photo_path":""},{"id":"11a977af-4b91-44c9-a225-b207e8b3ff2d","name":"Akan Kadyrbek","year":"2024","university":"University of Toronto, Canada","country":"Canada","notes":"Geography; Star Basketball player","flag":"🇨🇦","photo_path":""},{"id":"d6572230-f9e6-4028-a15a-402bd8d8c26d","name":"Akbota Orazbek","year":"2024","university":"New York University","country":"USA","notes":"Engineering. Tandon School of Engineering. Transfer from Penn State","flag":"🇺🇸","photo_path":""},{"id":"4d5a0fb4-831b-441f-b951-b7b5ffab5e4b","name":"Albert Shalumov","year":"2024","university":"University of Bath, UK","country":"UK","notes":"Leader of Royal Albert Air Force, Engineering","flag":"🇬🇧","photo_path":""},{"id":"47169ef9-3c73-426d-a65a-19f1f0098607","name":"Albina Turakpayeva","year":"2024","university":"University of Toronto, Canada","country":"Canada","notes":"Hall of Fame, Top World University Lester B Pearson full scholarship winner. Founder of HALSAT","flag":"🇨🇦","photo_path":""},{"id":"71e8b221-334c-4ad8-aa08-66ca115cc142","name":"Aldiyar Orazalin","year":"2024","university":"Northwestern University, USA","country":"USA","notes":"Hall of Fame, Top World Uni","flag":"🇺🇸","photo_path":""},{"id":"83483ace-72fa-4ba9-8911-93562a39be7e","name":"Alikhan Madibekov","year":"2024","university":"Stanford University, USA","country":"USA","notes":"Hall of Fame, Top World Uni, full scholarship. Winner of Rise Scholarship. Studying Neuroscience and IT. 5 A* grades.\nAlso admitted to: Columbia, Vanderbilt (Scholar), UC Berkeley, University of Richmond (scholarship), F&M, Kenyon, UBC (scholarship), Pomona, UCLA, Union, Bates, Case Western, Johns Hopkins, WashU, Wesleyan, Trinity, USC, Amherst, Swarthmore, Colgate, CMC, Oberlin, Reed","flag":"🇺🇸","photo_path":""},{"id":"ebab0fd3-bfbc-4151-9ed6-7563c35a06a8","name":"Alinura Bekzhanova","year":"2024","university":"SP Jain, Singapore","country":"Singapore","notes":"International management","flag":"🇸🇬","photo_path":""},{"id":"a10ce6b4-79b4-47a7-9b55-e9f2bc2a6295","name":"Alisha Jumatova","year":"2024","university":"Deakin University, Australia","country":"Australia","notes":"First in Australia!","flag":"🇦🇺","photo_path":""},{"id":"3d135eec-3939-4e85-85f1-95e1922ddf36","name":"Aliya Nurmukhambetova","year":"2024","university":"Heriot Watt, Dubai","country":"","notes":"","flag":"🇦🇪","photo_path":""},{"id":"fb02a4c2-bb5a-44fb-b8a7-759e5ec5900b","name":"Almina Zhidebayeva","year":"2024","university":"Brown University, USA","country":"USA","notes":"Hall of Fame Top World Uni","flag":"🇺🇸","photo_path":""},{"id":"708f2b95-d9a8-4e70-bb14-fe4df912b629","name":"Alnur Nazarbayev","year":"2024","university":"Birmingham University, Dubai","country":"UK","notes":"Business","flag":"🇦🇪","photo_path":""},{"id":"dc1bd375-b6ae-48ab-8c75-75e371dfe1b1","name":"Amina Sadykova","year":"2024","university":"American University, USA","country":"USA","notes":"Liberal Arts, Business","flag":"🇺🇸","photo_path":""},{"id":"fbe99672-d6d7-4711-adf6-14b03282f01d","name":"Arsen Ashlyaev","year":"2024","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"fc52a2eb-5e49-4340-8e8b-51f41af672b7","name":"Batyrkhan Tazhiyev","year":"2024","university":"Hong Kong University of Science and Technology (HKUST)","country":"Hong Kong","notes":"School Captain, Engineering. Belt and Road Scholar","flag":"🇭🇰","photo_path":""},{"id":"daa2232a-fc7e-45d5-b522-e94f3c610289","name":"Danial Umirzhanov","year":"2024","university":"University of Wisconsin, Madison, USA","country":"USA","notes":"Engineering","flag":"🇺🇸","photo_path":""},{"id":"b9f566af-3bf0-4fdb-b8a4-6856edd6ce76","name":"Daniil Pak","year":"2024","university":"University of Toronto, Canada","country":"Canada","notes":"Business","flag":"🇨🇦","photo_path":""},{"id":"709baff8-98ee-4f92-8183-fe4e8d34d7c1","name":"Dariya Yetekbay","year":"2024","university":"Instituto Europeo di Design, Italy","country":"Italy","notes":"","flag":"🇮🇹","photo_path":""},{"id":"60cfe748-41f7-4e11-a68f-cd03d3f92f52","name":"Daulet Bekshenov","year":"2024","university":"University of South California","country":"USA","notes":"transfered from UC Davis, Business. Now studying Civil Engineering","flag":"🇺🇸","photo_path":""},{"id":"54d122ed-33ec-4469-b34f-996b97add75e","name":"Dinmukhammed Sabali","year":"2024","university":"IE Segovia, Spain","country":"Spain","notes":"Business","flag":"🇪🇸","photo_path":""},{"id":"dd3f729a-ea27-47cd-b82d-f238a779e44c","name":"Ekaterina Ageeva","year":"2024","university":"ESADE Business School Barcelona, Spain","country":"Spain","notes":"Business","flag":"🇪🇸","photo_path":""},{"id":"e5817bd4-1fb3-431d-b37f-1ffdf374b794","name":"Ildana Akhmetova","year":"2024","university":"Royal Holloway, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"bc965092-b5c9-4982-9a46-696f5028e5d6","name":"Insar Imash","year":"2024","university":"KAIST (Korea Advanced Institute of Science and Technology)","country":"Korea","notes":"majors in Chemical and Biomolecular Engineering","flag":"","photo_path":""},{"id":"7a8a01ee-c505-485a-ad12-9c026880f32e","name":"Iskander Yessenbayev","year":"2024","university":"University of British Columbia (UBC), Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"0624f112-8205-4538-abf2-138ba8af809d","name":"Islam Buleshov","year":"2024","university":"University of Chicago","country":"USA","notes":"Top US university, studying maths. Transfered from Bocconi","flag":"🇺🇸","photo_path":""},{"id":"968d043e-31ab-4eb3-a6c9-41ea8317662b","name":"Liepa Maceviciute","year":"2024","university":"École supérieure de commerce de Paris, France","country":"France","notes":"Business, First in France","flag":"🇫🇷","photo_path":""},{"id":"7402579a-ce2e-4558-a10c-daaba690c54b","name":"Liya Nur","year":"2024","university":"Hanze University of Applied Sciences, Netherlands","country":"Netherlands","notes":"Art","flag":"🇳🇱","photo_path":""},{"id":"1deb2e4c-30ee-4897-b012-2b5d4285fecb","name":"Magnus Pullen","year":"2024","university":"Central St. Martins, UK","country":"UK","notes":"Fashion Design","flag":"🇬🇧","photo_path":""},{"id":"f084d450-2a96-4905-b6c6-678075363f82","name":"Makhmut Omar","year":"2024","university":"gap year; Cornell University, USA","country":"USA","notes":"Hall of Fame Top World Uni IVY full scholarship","flag":"🇺🇸","photo_path":""},{"id":"09657ff1-3f52-4311-91aa-9211071acf61","name":"Malika Shakirkhanova","year":"2024","university":"Purdue University, USA","country":"USA","notes":"Engineering","flag":"🇺🇸","photo_path":""},{"id":"71690a4f-cba8-438a-820f-9b96b7beb94b","name":"Manshuk Nurmukhambetova","year":"2024","university":"Marangoni University, UK","country":"UK","notes":"Art","flag":"🇬🇧","photo_path":""},{"id":"c5cd7c8a-c7ec-4e21-bc34-e2b992302424","name":"Nabi Kussaiyn","year":"2024","university":"Kyoto University of Advanced Science, Japan","country":"Japan","notes":"gap year. First in Japan, Full Scholarship. Engineering","flag":"🇯🇵","photo_path":""},{"id":"35076913-ff45-41f3-9ac6-b06aba5b0d85","name":"Nailya Kabylbekova","year":"2024","university":"City, University of London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"00c9db25-4a5e-4516-84d4-446b7d326e18","name":"Nuriya Klimenko","year":"2024","university":"University of California, Santa Cruz, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"b6a60253-062d-4dda-914f-2f78ad8870b8","name":"Nursulu Burkitbayeva","year":"2024","university":"Pomona College, USA","country":"USA","notes":"Hall of Fame, Top World Uni. Best Liberal Arts college in the USA","flag":"🇺🇸","photo_path":""},{"id":"f766c1d4-9687-4c63-8d4b-a0dd441e6b64","name":"Ruihan Chu","year":"2024","university":"Cornell","country":"USA","notes":"School Captain, Engineering, Ivy League","flag":"🇺🇸","photo_path":""},{"id":"c62afe1c-428d-41be-ad01-5ab4cafa775e","name":"Sana Anuar","year":"2024","university":"Sapienza Universita di Roma, Italy","country":"Italy","notes":"International Relations","flag":"🇮🇹","photo_path":""},{"id":"c6d0aee4-7806-46a7-b23b-e10d1eee6bd0","name":"Saniya Akmetbayeva","year":"2024","university":"University of Manchester, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"567eeb8c-74b5-4884-80d1-6e774bc55cc9","name":"Selin Kurt","year":"2024","university":"Instituto Europeo di Design, Italy","country":"Italy","notes":"Art","flag":"🇮🇹","photo_path":""},{"id":"60a28e10-eacb-43ef-8af7-9640038cd852","name":"Tair Issabekov","year":"2024","university":"University of California, San Diego, USA","country":"USA","notes":"Engineering","flag":"🇺🇸","photo_path":""},{"id":"d9420cd8-c087-41d0-a17a-a683da41552b","name":"Timur Ibragimov","year":"2024","university":"IE Segovia, Spain","country":"Spain","notes":"Business","flag":"🇪🇸","photo_path":""},{"id":"f45cdff9-a339-40b5-81fe-48fb102ab162","name":"Tomiris Kamitova","year":"2024","university":"New York University (NYU)","country":"USA","notes":"Liberal Arts, First in NYU","flag":"🇺🇸","photo_path":""},{"id":"e9641622-5fb3-4b50-9635-588e48c6f3c4","name":"Ulpan Nurdilda","year":"2024","university":"Kings College London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"1cdcc9b5-7c96-4a99-936a-179f8b793a88","name":"Vladislav Bogomazov","year":"2024","university":"Bocconi University, Italy","country":"Italy","notes":"Finance","flag":"🇮🇹","photo_path":""},{"id":"c0af86c4-ac1a-4e12-9790-5fa4549ab059","name":"Yasmin Uzykanova","year":"2024","university":"London School of Economics, (LSE), UK","country":"UK","notes":"Hall of Fame, Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"f23b414b-ddb3-4887-9b0c-78d55c34ff62","name":"Zhansaya Issabekova","year":"2024","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"8e8ad7c2-b2fb-4af0-abf3-ae62b12f4299","name":"Akezhan Shakhabdin","year":"2023","university":"HKUST","country":"Hong Kong","notes":"Physics and Maths, Full Scholarship. Olympiads","flag":"🇭🇰","photo_path":""},{"id":"db8947b6-0be4-4eba-bf20-df7a127fd061","name":"Aldiyar Amankulov","year":"2023","university":"Regent's University","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"074df8e5-5f78-4d15-81e0-a6ef604bb23d","name":"Aldiyar Tuktin","year":"2023","university":"Boston University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Chemistry","flag":"🇺🇸","photo_path":""},{"id":"de9e2bd4-ec3d-4906-8b7f-15f52c08f6b1","name":"Alen Yessenbayev","year":"2023","university":"De Monfort University, Kazakhstan","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"f6454959-aca2-4bda-bbad-1d0753f23ce8","name":"Alikseniia Martysheva","year":"2023","university":"Harvard, USA","country":"USA","notes":"School Captain, Hall of Fame Top World Uni, Ivy League. First in Harvard","flag":"🇺🇸","photo_path":""},{"id":"835657c3-ee3f-41db-a50b-f2f95bfc395b","name":"Alimzhan Sayat","year":"2023","university":"London South Bank University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"4ea81c28-93e6-471c-96ae-1246bfce6152","name":"Alinur Sayat","year":"2023","university":"UCLA, USA","country":"USA","notes":"School Captain, Hall of Fame Top World Uni. First in UCLA","flag":"🇺🇸","photo_path":""},{"id":"611dae73-23bd-4ee0-b014-948f0ff10f80","name":"Alisher Nurbekov","year":"2023","university":"Herriot Watt, Dubai","country":"","notes":"","flag":"🇦🇪","photo_path":""},{"id":"65a62328-f467-4ee2-8614-6999edc57278","name":"Alua Maratova","year":"2023","university":"Leiden University","country":"Netherlands","notes":"Also accepted into Windsheim, NL","flag":"🇳🇱","photo_path":""},{"id":"d4cc6424-afc1-4199-b324-f33de79b22d9","name":"Amir Hossein Mirzaei Kahagh","year":"2023","university":"UCL, Sports Medicine","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"9195a997-34f0-471a-b14d-d7fa8b0647c2","name":"Amir Nurmukhambetov","year":"2023","university":"Eindhoven, Netherlands","country":"Netherlands","notes":"Computer Science","flag":"🇳🇱","photo_path":""},{"id":"7829b482-a809-4b7c-ac04-cd0ce5a81e82","name":"Amirlan Aitkozhin","year":"2023","university":"University of West London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"713c9cd7-d797-4311-8bf7-0bdacb0ae778","name":"Anuar Kul-Mukhammed","year":"2023","university":"University of Chicago, USA","country":"USA","notes":"First in U Chicago, Finance","flag":"🇺🇸","photo_path":""},{"id":"edad7176-245e-4227-a2ec-aefcb01f6bec","name":"Archie Clayton","year":"2023","university":"LJM University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"3e31f3ca-eb09-4ca2-9b56-aa6928788fa3","name":"Arina Babenko","year":"2023","university":"Willem de Kooning Art University, Rotterdam","country":"","notes":"Art","flag":"","photo_path":""},{"id":"b07c3422-1e11-4ef4-a507-14ed0edec89b","name":"Arlan Nurbalin","year":"2023","university":"Durham University, UK","country":"UK","notes":"Hall of Fame Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"ac503403-b410-4c74-992d-418045d89afd","name":"Arsen Amankulov","year":"2023","university":"University College London, UCL, UK","country":"UK","notes":"Finance","flag":"🇬🇧","photo_path":""},{"id":"0b3efb76-9c2e-4671-a626-38ad39a474ae","name":"Aruzhan Nussipzhan","year":"2023","university":"Queen Mary University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"8bc0839d-5c7e-4396-9653-d279183e9496","name":"Asena Yoon-Yildiz","year":"2023","university":"gap year. Turkey","country":"Turkey","notes":"","flag":"🇹🇷","photo_path":""},{"id":"0bdee537-5cb2-4122-8df2-c89765d15a4c","name":"Azima Rollanova","year":"2023","university":"UCLA","country":"USA","notes":"Business, transfer student\nAlso accepted into UMass Boston, UC Irvine\nForbes 30 under 30","flag":"🇺🇸","photo_path":""},{"id":"02f5a196-c692-48e8-8b25-8c9a4d510db0","name":"Batyrkhan Sakenov","year":"2023","university":"Hong Kong University of Science and Technology, HKUST,","country":"Hong Kong","notes":"Physics, Maths","flag":"🇭🇰","photo_path":""},{"id":"47d836c3-728a-4636-be3d-f929b297de83","name":"Dana Skorokhodova","year":"2023","university":"Bocconi University, Italy","country":"Italy","notes":"Finance, maths","flag":"🇮🇹","photo_path":""},{"id":"bb30d9e4-9ac5-4c7a-a88e-37581052b44a","name":"Dariga Beisenbayeva","year":"2023","university":"Kingston University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"1d366406-8fb9-4b1d-93ae-bed37b7215c8","name":"Dariga Khaidarova","year":"2023","university":"Loughborough University, UK","country":"UK","notes":"Art","flag":"🇬🇧","photo_path":""},{"id":"aafe010b-25bb-441c-8f86-66d7d13c59ec","name":"Dayana Khaidarova","year":"2023","university":"Bournemouth Arts, UK","country":"UK","notes":"Art","flag":"🇬🇧","photo_path":""},{"id":"6d1a70cf-b57a-4a2c-bb4b-283e1b89ed50","name":"Diar Bizakov","year":"2023","university":"SOAS University of London, UK","country":"UK","notes":"International Relations","flag":"🇬🇧","photo_path":""},{"id":"0fecadf2-ebcf-442d-9e53-2eb5d6830aa5","name":"Gabriel Repassy","year":"2023","university":"University of Westminster, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"e9043816-c1e1-4895-bcce-09d5f2565df3","name":"Gleb Patyrin","year":"2023","university":"Richmond University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Full Scholarship, Finance","flag":"🇺🇸","photo_path":""},{"id":"06821e18-4406-4fd1-895b-3c09de922699","name":"Iskander Kessikbayev","year":"2023","university":"London School of Economics, LSE, UK","country":"UK","notes":"Hall of Fame Top World Uni\nMasters degree in LSE, 2026","flag":"🇬🇧","photo_path":""},{"id":"c5a6611d-08f1-4aad-96c9-1edf3b562f9c","name":"Lina Alipbayeva","year":"2023","university":"UCL","country":"USA","notes":"Also accepted into Brandeis College, USA\nForbes 30 Under 30","flag":"🇺🇸","photo_path":""},{"id":"52a1d9fc-4c40-4465-b4b2-489d9c1348b9","name":"Melana LaMascus","year":"2023","university":"University of Toronto, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"d6328077-aa49-4237-93f7-6c6e79b80c0f","name":"Nicolas Stockermans Munoz","year":"2023","university":"Chinese University of Hong Kong, Shenzhen","country":"Hong Kong","notes":"Hall of Fame Top World Uni, First HAL in China","flag":"🇭🇰","photo_path":""},{"id":"4eb7e2f4-8924-4861-8bd9-33bb3905465d","name":"Nurkhat Assylbek","year":"2023","university":"Cardiff University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"d2c3b99f-db33-45a4-8286-44d5f3d97e77","name":"Rabia Ni","year":"2023","university":"Brown University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Ivy, Pre Medicine","flag":"🇺🇸","photo_path":""},{"id":"f6457572-570c-4577-a17f-6d61ed74b861","name":"Saduakas Orynbasar","year":"2023","university":"gap year. Singapore","country":"Singapore","notes":"","flag":"🇸🇬","photo_path":""},{"id":"a395ef1f-c610-41b6-9a4f-9675896963cb","name":"Sami Seyed Hosseini","year":"2023","university":"Chapman University, USA","country":"USA","notes":"Animation design","flag":"🇺🇸","photo_path":""},{"id":"6c6a5c63-2ed8-4c97-8a7f-c30d10edc4a4","name":"Saniya Mukhambetkaliyeva","year":"2023","university":"Bryn Mawr, USA","country":"USA","notes":"Top Liberal Arts College USA. Full Financial Aid","flag":"🇺🇸","photo_path":""},{"id":"cd53a449-7f16-4d35-a291-13edfc7d7029","name":"Saruar Sakenova","year":"2023","university":"University College London, UCL, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"b5b60fc8-4934-4de9-9b76-abfa04bbc97c","name":"Selin Chetinelli","year":"2023","university":"UC Berkeley","country":"USA","notes":"Hall of Fame, gap year, UC Berkeley. Engiineering","flag":"🇺🇸","photo_path":""},{"id":"190f74ba-573b-4fae-9cc9-4b57e596a7f5","name":"Yasmin Boran","year":"2023","university":"Middlesex, UAE","country":"UAE","notes":"","flag":"🇦🇪","photo_path":""},{"id":"75d52df2-6d55-459b-8058-f8ac5f47e190","name":"Zhibek Timraliyeva","year":"2023","university":"University College Roosevelt, Netherlands","country":"Netherlands","notes":"Masters in Imperial College London, Molecular Medicine","flag":"🇳🇱","photo_path":""},{"id":"e73497cb-a1fc-4e60-bb1b-7223ee84da22","name":"Aidana Assylbek","year":"2022","university":"University of St Andrews, UK","country":"UK","notes":"Hall of Fame Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"47d1655a-3360-45f6-af5d-e41756aa5ece","name":"Aigerim Begaliyeva","year":"2022","university":"Queen Mary University of London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"5300a609-d26e-46f1-a713-465b17456709","name":"Ailin Ibadullayeva","year":"2022","university":"George Washington University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"4608a896-d57b-4996-97c5-7776e7c60f74","name":"Ailin Meirzhanova","year":"2022","university":"EU Business School, Spain","country":"Spain","notes":"business","flag":"🇪🇸","photo_path":""},{"id":"31cbe995-3888-45c1-8f3e-39d49ffcfc7a","name":"Aisha Sarsenova","year":"2022","university":"IE University, Spain","country":"Spain","notes":"International Relations, Business","flag":"🇪🇸","photo_path":""},{"id":"c25261f2-8bc3-46f9-bdf8-a190dcfd18cb","name":"Aiya Mashbekova","year":"2022","university":"University of Exeter, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"b2d4cef7-e601-4f2c-ace2-f8fb24db49c2","name":"Aldiyar Batalov","year":"2022","university":"Suffolk University, USA","country":"USA","notes":"Business","flag":"🇺🇸","photo_path":""},{"id":"a5d63737-858c-401d-a407-10a61c6dcec5","name":"Aldiyar Shangereyev","year":"2022","university":"The University of Oklahoma, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"3bc79458-611f-47a4-bff5-132d04646c9f","name":"Alexey Dudarev","year":"2022","university":"The University of British Columbia (UBC), Canada","country":"Canada","notes":"Hall of Fame Top World Uni, Full International Scholar","flag":"🇨🇦","photo_path":""},{"id":"09f24c98-9ed2-4346-aa06-f16725d4c8f7","name":"Alikhan Zhabykenov","year":"2022","university":"Georgia Tech, USA","country":"USA","notes":"Hall of Fame Top World Uni","flag":"🇺🇸","photo_path":""},{"id":"3e57955b-af69-43bb-89ab-47a473c19165","name":"Aliya Bekshenova","year":"2022","university":"Northwestern University, USA","country":"USA","notes":"Hall of Fame Top World Uni\nBio Engineering","flag":"🇺🇸","photo_path":""},{"id":"6d8be6c5-1a69-48c1-8224-1bd13d9c2b7c","name":"Aliya Sain","year":"2022","university":"Leiden University, Netherlands","country":"Netherlands","notes":"","flag":"🇳🇱","photo_path":""},{"id":"7fba7573-8740-4940-bce3-99108c266336","name":"Anuar Burkitbayev","year":"2022","university":"Columbia University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Ivy League, Finance","flag":"🇺🇸","photo_path":""},{"id":"8e005aa7-b976-4a40-aa68-4c4e3d886b94","name":"Aray Amirzhanova","year":"2022","university":"Reading University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"1f403e0e-d2a7-4cf2-8ce1-4dbcd0419a81","name":"Armanzhan Baizakov","year":"2022","university":"Reading University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"b5009636-d168-412d-b22a-3fcc1737826d","name":"Danat Kenzhegali","year":"2022","university":"Yale University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Full Scholarship","flag":"🇺🇸","photo_path":""},{"id":"a11e189b-aa1e-402c-b381-ef0109b77b2c","name":"Defne Goktas","year":"2022","university":"Özyeğin University, Turkey","country":"Turkey","notes":"Business Studies","flag":"🇹🇷","photo_path":""},{"id":"d4c658b3-2d30-4e36-8c76-0c36b4be9a38","name":"Deni Yussupaliyev","year":"2022","university":"Royal University of Groningen, Netherlands","country":"Netherlands","notes":"","flag":"🇳🇱","photo_path":""},{"id":"82cd9ff0-7ac5-4cb2-a3ad-93569556257e","name":"Didar Ospanaliyev","year":"2022","university":"Bournemouth University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"4eb4528a-0fb3-4ced-8594-70dc1a63dfc2","name":"Dinara Utemuratova","year":"2022","university":"University of the Arts London (Central Saint Martins), UK","country":"UK","notes":"gap year, top UK Art School","flag":"🇬🇧","photo_path":""},{"id":"4f979f0e-b3d6-460b-906d-89fd145082e4","name":"Dinmukhammed Umirbayev","year":"2022","university":"The Hong Kong University of Science and Technology (HKUST), Hong Kong","country":"Hong Kong","notes":"full scholarship","flag":"🇭🇰","photo_path":""},{"id":"d5b6558b-351c-4d77-8815-bb5b01b9a381","name":"Fatima Abylgazina","year":"2022","university":"University of Amsterdam, Netherlands","country":"Netherlands","notes":"","flag":"🇳🇱","photo_path":""},{"id":"28ac4fad-6970-4f70-b687-143f8945ce25","name":"Fidan Shirin","year":"2022","university":"Vrije University Amsterdam, Nethelands","country":"","notes":"","flag":"","photo_path":""},{"id":"e0c2c0eb-44e4-4dc5-b170-6c4bb2ec4166","name":"Jasmine Nekounam","year":"2022","university":"Brock University, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"27a7e60a-d961-4cf3-b5cf-54cb1629cca5","name":"Kalkamanali Satvaldy","year":"2022","university":"Embry Riddle Aeronautics University, USA","country":"USA","notes":"Aerospace Engineering","flag":"🇺🇸","photo_path":""},{"id":"2fd233ea-c993-4372-a5c6-288d3e3401d4","name":"Kamila Maral","year":"2022","university":"The University of British Columbia (UBC), Canada / Science Po University, France","country":"Canada","notes":"Hall of Fame Top World Uni, First Dual Degree","flag":"🇫🇷","photo_path":""},{"id":"62f733d9-937b-4a94-9680-1a1405a7a04d","name":"Klara Machova","year":"2022","university":"Czechia","country":"Czech Republic","notes":"","flag":"🇨🇿","photo_path":""},{"id":"a0fb1104-ba61-4e53-b54b-a2e65e8a603e","name":"Maiya Bukanova","year":"2022","university":"University of Cambridge Churchill College, UK","country":"UK","notes":"Hall of Fame Top World Uni, Engineering","flag":"🇬🇧","photo_path":""},{"id":"75544452-ecf3-40d6-b852-e81774be9832","name":"Miras Koilybay","year":"2022","university":"Yonsei University, South Korea","country":"South Korea","notes":"full scholarship, Underwood College. Liberal Arts","flag":"🇰🇷","photo_path":""},{"id":"08848543-a25b-4ea8-bd31-9add2b296c5d","name":"Nadir Nadirov","year":"2022","university":"Reading University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"a0bdeba4-2e3e-47b0-af33-7037a766cd1a","name":"Nursultan Maikeyev","year":"2022","university":"King's College, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"be068913-27de-4bd7-9033-11cba26cfa80","name":"Orazkhan Khaidar","year":"2022","university":"The Hong Kong University of Science and Technology (HKUST), Hong Kong","country":"Hong Kong","notes":"full scholarship, maths","flag":"🇭🇰","photo_path":""},{"id":"304a25ad-0c16-46d8-9515-117479697f9d","name":"Raniya Botpayeva","year":"2022","university":"City University of London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"1d1fe7ca-6e4f-42bb-a321-c61d8583959e","name":"Sofiya Shagirova","year":"2022","university":"University College London (UCL)","country":"UK","notes":"Social Studies","flag":"🇬🇧","photo_path":""},{"id":"db5fe3bc-7074-4c89-b091-39a78668c0ac","name":"Togzhan Batyrbekova","year":"2022","university":"Bocconi University, Italy","country":"Italy","notes":"Finance","flag":"🇮🇹","photo_path":""},{"id":"06795530-c0d3-44b9-a60e-e3e4d17d323e","name":"Vlada Bartosh","year":"2022","university":"University of Warwick, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"423cfce5-517a-4b11-b2ba-9dcefe383c31","name":"Yeskendir Zharimbet","year":"2022","university":"University of Surrey, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"a914d46d-4281-434a-925f-27ff7ec622fc","name":"Yuliya Kim","year":"2022","university":"University of the Art London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"d81f199e-86cf-48ac-ae7d-273ab540d8ae","name":"Yuriy Ten","year":"2022","university":"Iowa State University, USA","country":"USA","notes":"Maths","flag":"🇺🇸","photo_path":""},{"id":"119d6f78-a4d4-42b8-8965-05ed58ca1abe","name":"Zhangir Nurmukhambetov","year":"2022","university":"Saxion University, Netherlands","country":"Netherlands","notes":"Computer Design","flag":"🇳🇱","photo_path":""},{"id":"db31ac53-dc6d-48ce-905e-27b52c822e08","name":"Aizere Kopbayeva","year":"2021","university":"Middlesex University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"aab977b6-a9f0-4a31-a96e-22a03a42d565","name":"Alima Medetova","year":"2021","university":"Bocconi University, Italy","country":"Italy","notes":"Business, Economics","flag":"🇮🇹","photo_path":""},{"id":"4e392968-4c8a-4522-8c10-327a0fb4ef11","name":"Alina Kim","year":"2021","university":"University of British Columbia (UBC), Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"04b74cde-58e1-4ea8-9b46-8374589f2bf1","name":"Amanali Makashov","year":"2021","university":"University of Brighton, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"315cc00c-67ff-4a63-8a7d-c1550ba35e2c","name":"Anastassiya Khon","year":"2021","university":"University of Padua, Italy","country":"Italy","notes":"Psychology","flag":"🇮🇹","photo_path":""},{"id":"02d109b4-5705-4286-92e0-46e6a5d082da","name":"Anna Kim","year":"2021","university":"University of Toronto, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"3c7a82f0-914f-4b82-b03d-2fe9d3f9eaf7","name":"Daniyar Zakarin","year":"2021","university":"Bocconi University, Italy","country":"Italy","notes":"","flag":"🇮🇹","photo_path":""},{"id":"e553dfff-8b2f-4216-a9c6-40fff6d72015","name":"Erzhan Kabdykairov","year":"2021","university":"Bocconi University, Italy","country":"Italy","notes":"maths, data","flag":"🇮🇹","photo_path":""},{"id":"2945c3f7-6f45-470d-b915-fb48c9e30b16","name":"Kassym Mukhanbetiyar","year":"2021","university":"Bocconi University, Italy","country":"Italy","notes":"Maths","flag":"🇮🇹","photo_path":""},{"id":"b147b1b5-73dc-4345-baa5-4fa8f0772113","name":"Leonid Deriglazov","year":"2021","university":"University of Brighton, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"6679adb0-bb97-4a8e-9318-7f214aed856d","name":"Mansur Nurmukhambetov","year":"2021","university":"Groningen University, Netherlands","country":"Netherlands","notes":"Computer Science","flag":"🇳🇱","photo_path":""},{"id":"5e68a1aa-e2d9-4c25-b63a-bd2f7d4579b2","name":"Maya Kirton","year":"2021","university":"University of Derby, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"ff9e0b52-8d37-4fbd-b2b4-09ef6e936c33","name":"Miras Karimov","year":"2021","university":"Lancaster University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"c248bb50-db5a-4165-a5cd-19117f7aa082","name":"Olga Minko","year":"2021","university":"Maastricht University, Netherlands","country":"Netherlands","notes":"Liberal Arts","flag":"🇳🇱","photo_path":""},{"id":"79c592ea-7dbd-41e6-ad95-127255095627","name":"Olzhas Toibazarov","year":"2021","university":"University of Kent, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"7e17073a-8698-4584-bf01-5177f61122ee","name":"Richard Herrmann","year":"2021","university":"Erasmus University Rotterdam, Netherlands","country":"Netherlands","notes":"Economics","flag":"🇳🇱","photo_path":""},{"id":"dbe7cf5f-bb47-49be-973b-1546ea76aa08","name":"Sanzhar Yelshibekov","year":"2021","university":"Bocconi Unversity","country":"Italy","notes":"International Economics and Finance","flag":"🇮🇹","photo_path":""},{"id":"872582b1-bc6e-47eb-b115-bcf1c91e2b12","name":"Sarah Zimmermannova","year":"2021","university":"University of Amsterdam, Netherlands","country":"Netherlands","notes":"","flag":"🇳🇱","photo_path":""},{"id":"dbb57a6e-c1a3-488a-998f-33ee13c29e01","name":"Tal Seyhan","year":"2021","university":"Queen Mary University of London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"737a002a-c78a-44e2-a4d4-c90e600f291b","name":"Tamila Boranbay","year":"2021","university":"University of Amsterdam, Netherlands","country":"Netherlands","notes":"","flag":"🇳🇱","photo_path":""},{"id":"5163446f-36ed-4720-9b60-e6f8d79f44a3","name":"Togzhan Shyntay","year":"2021","university":"Massachusetts Institute of Technology, MIT, USA","country":"USA","notes":"Hall of Fame Top World Uni, full scholarship. Computer Science","flag":"🇺🇸","photo_path":""},{"id":"bcc62607-defe-4f2c-a8a1-ed321940d7fe","name":"Tomiris Tatisheva","year":"2021","university":"Columbia University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Ivy","flag":"🇺🇸","photo_path":""},{"id":"2d1a8b5d-1128-428e-a96f-40772df8f59f","name":"Yerkezhan (Erko) Sakhiyeva","year":"2021","university":"Amherst College, USA","country":"USA","notes":"Hall of Fame Top World Uni. Top Liberal Arts College in USA","flag":"🇺🇸","photo_path":""},{"id":"d16f2350-53e4-4a2c-a59a-35f1a5eb7d06","name":"Aiganym Raimzhanova","year":"2020","university":"Brown University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Ivy League","flag":"🇺🇸","photo_path":""},{"id":"0737362b-118d-423d-af64-b1694e264c6c","name":"Aisha B. Bikebayeva","year":"2020","university":"Parsons School of Design, USA","country":"USA","notes":"Art","flag":"🇺🇸","photo_path":""},{"id":"2c89028e-7ae3-43d9-bb68-3379160bfbd2","name":"Aisulu Burkitbayeva","year":"2020","university":"Imperial College London, UK","country":"UK","notes":"Hall of Fame Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"e4d68ec9-d253-4ba1-9b5f-1b7c8830b066","name":"Alibek Sembayev","year":"2020","university":"The University of Manchester, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"c48c6488-cc5e-4a4d-971e-a08222ffaa9c","name":"Alisher Alipbayev","year":"2020","university":"Baruch College – The City University of New York, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"575afbee-a72f-45f0-b191-2bbcb87203b4","name":"Alizhan Tursunbekov","year":"2020","university":"Simon Fraser University, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"125c75ff-de4e-44f4-baa9-eb3211de9393","name":"Alzhan Askarov","year":"2020","university":"University of South Florida, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"10951429-11f7-4354-bcb6-db1c42ae2158","name":"Bekzat Nadir","year":"2020","university":"Arizona State University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"6e64d5fc-8d2d-4f1a-bd9e-f45728113fc0","name":"Danial Suleimenov","year":"2020","university":"University of Amsterdam, Netherlands","country":"Netherlands","notes":"","flag":"🇳🇱","photo_path":""},{"id":"d6d7a9f9-ee8d-4a18-8e10-efed4310c13a","name":"Daria Maliuta","year":"2020","university":"CFP Arts Geneva, Switzerland","country":"Switzerland","notes":"","flag":"🇨🇭","photo_path":""},{"id":"f44c4070-fc13-473c-a08d-198559345234","name":"Elizabeth Lazarenko","year":"2020","university":"Concordia University, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"422dad31-efc8-4115-a160-492ccc4aa56d","name":"Gaukhar Alzhanova","year":"2020","university":"Yale University, USA","country":"USA","notes":"Hall of Fame Top World Uni, Ivy","flag":"🇺🇸","photo_path":""},{"id":"ec87fc46-c0bf-4d03-a9ce-996f8af92d29","name":"Jaehyung Andrew Choi","year":"2020","university":"University of Cambridge Gonville & Caius College, UK","country":"UK","notes":"Hall of Fame Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"1475cbbf-fa0a-490b-94f5-dd72ef91412a","name":"Layli Ofarinova","year":"2020","university":"University of Kent, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"8e138eb4-189e-4f12-ab58-aba49e26ac9b","name":"Nurtas Shyntas","year":"2020","university":"NYU Abu Dhabi","country":"UAE","notes":"Transfer from Higher School of Economics, Russia to NYU Abu Dhabi","flag":"🇦🇪","photo_path":""},{"id":"c7670953-0838-4b4e-8416-b3c0da9df4ce","name":"Temirlan S. Seitzhapar","year":"2020","university":"George Mason University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"1957cbb1-2c5f-4ea6-bad1-ad0f33ded56e","name":"Timur A. Amanbayev","year":"2020","university":"San Diego State University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"aabf2996-a379-45ca-b83b-ea55bab84f66","name":"Vladislav Shevelev","year":"2020","university":"Simon Fraser University, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"47ba431b-d4b8-43db-a36e-88dc144e1150","name":"Yasmin Burrows","year":"2020","university":"Middlesex University, Dubai","country":"","notes":"","flag":"🇦🇪","photo_path":""},{"id":"3f14a147-d838-4e83-bc23-ea0e2f4bcecc","name":"Yuriy Kim","year":"2020","university":"Simon Fraser University, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"b6ce9b44-7f8a-4f3d-8a32-d733149d41ec","name":"Aisultan Ismailov","year":"2019","university":"Northeastern University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"01da303b-cb8a-4692-aaeb-e44f4c3fd37b","name":"Alisher Zhaken","year":"2019","university":"King’s College London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"4d992537-c351-466f-a66a-7322c9c14041","name":"Anuar G. Gaisin","year":"2019","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"039d1bff-b5e7-4102-9f07-a0fe532f0f40","name":"Arman Zhumakov","year":"2019","university":"University of Birmingham, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"c0422247-e2d7-4bc5-861f-fe761527e49f","name":"Aruzhan Koshkarova","year":"2019","university":"Worcester Polytechnical Institute, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"08afc36c-807c-4728-9aaf-bfc8d742eb9f","name":"Assel Izbayeva","year":"2019","university":"Hofstra University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"aab6a748-5919-46f0-92f2-f929d925a641","name":"Dana Kanafina","year":"2019","university":"Charles University, Prague","country":"","notes":"","flag":"","photo_path":""},{"id":"36958186-2d9b-4692-944b-c78d698af9b1","name":"Daniyar Voogdt","year":"2019","university":"University of Oxford, Balliol College, UK","country":"UK","notes":"Hall of Fame Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"725d490d-e7ed-49f4-83c9-c4c5c78f6b67","name":"Defne Bagci","year":"2019","university":"Koç University, Turkey","country":"Turkey","notes":"","flag":"🇹🇷","photo_path":""},{"id":"632ff52b-530f-4b05-a5ae-1b3292bab838","name":"Derin Kurun","year":"2019","university":"Koç University, Turkey","country":"Turkey","notes":"","flag":"🇹🇷","photo_path":""},{"id":"1ac28004-c83d-4c76-b035-853d4bb62ac5","name":"Jorika Harazimova","year":"2019","university":"University of Westminster, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"3a15ade1-d6dd-4704-880c-f1420c38d9eb","name":"Junhyuk Gwon","year":"2019","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"2f0e2d8b-e799-4696-b57d-ff41c09ddac9","name":"Madilan Rashidov","year":"2019","university":"KU Leuven, Beligum","country":"","notes":"","flag":"","photo_path":""},{"id":"671920f7-123a-46b3-8d5e-de5c02683dc7","name":"Oyku K. Kurun","year":"2019","university":"Middle East Tecnical University, Turkey","country":"Turkey","notes":"","flag":"🇹🇷","photo_path":""},{"id":"0e97e1f7-f8da-4608-8d60-f74ba277d8bf","name":"Shyngys Bilyalov","year":"2019","university":"University of Cambridge Peterhouse College, UK","country":"UK","notes":"Hall of Fame Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"e1b51d13-53c1-43e9-b303-43e95552cc99","name":"Zufar I. Idoyatov","year":"2019","university":"Astana IT University, KZ","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"87eee721-e95d-4b68-9148-195f7aa05aa8","name":"Aishabibi Ashimbekova","year":"2018","university":"University of California, Berkeley, USA","country":"USA","notes":"Hall of Fame Top World Uni","flag":"🇺🇸","photo_path":""},{"id":"6e33fe0d-f1c3-4a2d-a7fc-bd8222c3adf8","name":"Alen Li","year":"2018","university":"California Institute of the Arts, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"9779a01a-bcdc-4596-8038-b315cce97b64","name":"Ali Osman Boran","year":"2018","university":"Oxford Brookes University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"95364e13-79ca-4b53-9fc3-ab4cb738ed99","name":"Alua Iralina","year":"2018","university":"KIMEP, Kazakhstan","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"1c3c483f-4a7d-4734-9b1f-38b7f5e502d2","name":"Anna Rakhilkina","year":"2018","university":"OCAD University, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"2e5863d5-fed3-462b-bfca-1539dce0506d","name":"Artyom Tiunelis","year":"2018","university":"University of Leeds, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"43fad7ed-3989-450f-b432-5183da74ff4a","name":"Dana Abylgazina","year":"2018","university":"IE University, Spain","country":"Spain","notes":"","flag":"🇪🇸","photo_path":""},{"id":"d4674c9a-db19-4d1b-bb4c-49d969fdcf82","name":"Dariya Baimagambetova","year":"2018","university":"The Wharton School, University of Pennsylvania, USA","country":"USA","notes":"Hall of Fame , HAL first in Ivy League","flag":"🇺🇸","photo_path":""},{"id":"eff7bf1e-3f8c-4d01-bb0e-97cd98098069","name":"Dinmukhamed Mailibay","year":"2018","university":"Korean Advanced Institute of Science (KAIST), Korea","country":"","notes":"Hall of Fame First in Korea","flag":"🇰🇷","photo_path":""},{"id":"1ab1a4cc-b499-4ca7-9b8e-8cb13fcf3540","name":"Inzhu Baibek","year":"2018","university":"Glasgow School of Art, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"48115747-e2f4-46b8-a3b7-4aaf8b332d88","name":"Julia Fong","year":"2018","university":"University of New Orleans, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"bfa861d5-f50c-4180-a6ba-8cd1d3634967","name":"Katya Sarah Nolan","year":"2018","university":"Karlsruhe Institute of Technology, Germany","country":"Germany","notes":"Hall of Fame Top World Uni, HAL first in Germany","flag":"🇩🇪","photo_path":""},{"id":"36997d69-3c74-4549-87cc-6e9bd795b6bd","name":"Mert Pektas","year":"2018","university":"NHL Stenden, Netherlands","country":"Netherlands","notes":"","flag":"🇳🇱","photo_path":""},{"id":"ff27858b-d10a-4ff5-bc3d-1df55886fe6e","name":"Sanzhar Bidaibek","year":"2018","university":"Hong Kong University of Science and Technology (HKUST), China","country":"China","notes":"","flag":"🇨🇳","photo_path":""},{"id":"c99dc664-2eeb-4dc0-8da4-b0ab8341f209","name":"Smat Baitileuov","year":"2018","university":"Bocconi University, Italy","country":"Italy","notes":"","flag":"🇮🇹","photo_path":""},{"id":"a67b55d2-bc98-4c9c-97c4-693fee1cfb3f","name":"Sofia Arpaci","year":"2018","university":"Parsons School of Design, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"334b0891-cf71-4f21-aba1-e86d48a2adfa","name":"Tamila Issabekova","year":"2018","university":"University of Toronto, Canada","country":"Canada","notes":"Hall of Fame Top World Uni, First in Canada","flag":"🇨🇦","photo_path":""},{"id":"b9d10f49-776c-4ca2-a826-7345c4d88181","name":"Temirlan Aidaruly","year":"2018","university":"Simon Fraser University, Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"3b4d0a9c-922a-414c-9cc3-7651d55794ce","name":"Timur Usmanov","year":"2018","university":"University of Bath, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"0e0060e5-0480-4649-a99f-637f65731b2b","name":"Volodymyr Kyselov","year":"2018","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"961a5c67-37ee-4198-82af-d0941b03f4d6","name":"Yelaman Sain","year":"2018","university":"Fordham University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"eeab6fc5-5f5f-4c1d-8ea0-da3cbdc21795","name":"Yelnur Abilakim","year":"2018","university":"Drexel University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"46243014-c8bf-49a6-99cf-39651f980b1a","name":"Zhahangir Batyrbekov","year":"2018","university":"Millsaps College, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"4ada5ec3-6d3c-4726-843f-06eff15a64d6","name":"Akezhan Sabykenov","year":"2017","university":"Dalhousie University Canada","country":"Canada","notes":"First HAL to Canada","flag":"🇨🇦","photo_path":""},{"id":"31fb1381-d237-4500-8732-21e1f26227cc","name":"Alma Abdraliyeva","year":"2017","university":"Royal Holloway University of London UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"e2bcca40-62b3-4ecd-995a-84ca386aa219","name":"Amina Askarbek","year":"2017","university":"Vienna University of Technology Austria","country":"Austria","notes":"First HAL to Austria","flag":"🇦🇹","photo_path":""},{"id":"0ebf7df6-f075-48ff-a87c-e8cbf3ef30fa","name":"Anastassiya Gumenyuk","year":"2017","university":"Les Roches School of Management Spain","country":"Spain","notes":"First HAL to Spain","flag":"🇪🇸","photo_path":""},{"id":"4c3564bc-67c3-4ae1-afd0-ae0dc8a1abd5","name":"Artur Turaliyev","year":"2017","university":"Loughborough University UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"40be3e26-ec70-4f8c-aa8a-cfcdbc982705","name":"Aruzhan Akchanova","year":"2017","university":"Durham University UK","country":"UK","notes":"Top UK University","flag":"🇬🇧","photo_path":""},{"id":"bef0a2cd-9e6f-43bc-a7fa-86cb0c530898","name":"Aruzhan Akhanova","year":"2017","university":"Central St Martins University of Arts London UK","country":"UK","notes":"Hall of Fame Top Arts School, HAL first in Arts","flag":"🇬🇧","photo_path":""},{"id":"13ec88ce-c2bf-43c5-8a4a-19160480f296","name":"Batuhan Harman","year":"2017","university":"University of Bath UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"1e3f8f38-56e1-429c-b508-5b4d415f3cf6","name":"Beibarys Kamzabek","year":"2017","university":"Bocconi University, Milan, Italy","country":"Italy","notes":"HAL Top World Uni First in Italy","flag":"🇮🇹","photo_path":""},{"id":"90990482-05f3-4824-8370-8ddc998f6eca","name":"Dariya Akan","year":"2017","university":"Leiden University Netherlands","country":"Netherlands","notes":"First HAL to Netherlands","flag":"🇳🇱","photo_path":""},{"id":"87ab9858-6817-481b-bb03-fb19523b9132","name":"Dias Shayakhmet","year":"2017","university":"University of Nottingham UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"a5291258-8d80-466e-8297-43828ba65e14","name":"Dinara Rakhimbayeva","year":"2017","university":"Coventry University London Campus UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"4f86b578-9b9a-43b0-aaf2-6f8d70079ba7","name":"Gaukhar Maral","year":"2017","university":"University of Manchester UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"47052899-2477-44b8-a3d5-e9368ecc98d7","name":"Karina Bissenova","year":"2017","university":"KU Leuven University Brussels campus","country":"","notes":"First HAL to Belgium","flag":"","photo_path":""},{"id":"b8901339-8721-4d69-a745-26417bc4dc87","name":"Medina Polat","year":"2017","university":"Erasmus University Rotterdam Netherlands","country":"Netherlands","notes":"Hall of Fame top World Uni and HAL First in Netherlands","flag":"🇳🇱","photo_path":""},{"id":"31cab306-1dca-4ebb-a95a-9a361eecc57c","name":"Ramina Krivich","year":"2017","university":"Science Political University Paris France","country":"France","notes":"HAL Top World Uni first in France","flag":"🇫🇷","photo_path":""},{"id":"dab188b4-8673-4928-a26b-157a1eb2fced","name":"Sabina Aitkozhina","year":"2017","university":"American University of Dubai UAE","country":"USA","notes":"","flag":"🇦🇪","photo_path":""},{"id":"4a3fe087-79de-417c-acac-2cddd9b46ced","name":"Shynggyskhan Bazarbay","year":"2017","university":"Delft University Holland","country":"","notes":"","flag":"","photo_path":""},{"id":"7d0d9c52-7e3b-4611-af03-5d3d69ce304f","name":"Timur Omarov","year":"2017","university":"Shenzhen University Shenzhen China","country":"China","notes":"First HAL in China","flag":"🇨🇳","photo_path":""},{"id":"f02c7e6c-0b5f-4d97-b536-2d9ea2184ffd","name":"Valeriya Kim","year":"2017","university":"Capilano University Canada","country":"Canada","notes":"","flag":"🇨🇦","photo_path":""},{"id":"aa9de1df-902d-4c8f-be8d-58c21838c780","name":"William Moody","year":"2017","university":"University of Vienna Austria","country":"Austria","notes":"Hall of Fame HAL first in Austria","flag":"🇦🇹","photo_path":""},{"id":"5233a3fd-2fa1-465a-a0e8-aba0909d592f","name":"Abdul Hadi Khan","year":"2016","university":"University of Cambridge Trinity College, UK","country":"UK","notes":"Hall of Fame Top World Uni","flag":"🇬🇧","photo_path":""},{"id":"3dc53597-e7c4-4e49-946a-98f2dd4d6175","name":"Aigerim Kuatbayeva","year":"2016","university":"Kazakh-British Technical University, KZ","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"d09a281e-5f1e-42fb-91e1-1919eb2b3d87","name":"Ainur Kuatbayeva","year":"2016","university":"Kazakh-British Technical University, KZ","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"5fd1fb65-f469-4720-8acb-40a9823c7e05","name":"Aisha Talgat","year":"2016","university":"Diablo Valley, San Francisco, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"7144958a-53cc-42c9-840e-45b174063a38","name":"Babyr Dombay","year":"2016","university":"Nazarbayev University, KZ","country":"","notes":"","flag":"🇰🇿","photo_path":""},{"id":"825c17df-d2f7-421f-aa42-ce03784212af","name":"Daulet Orazkulov","year":"2016","university":"University College London (UCL), UK","country":"UK","notes":"First HAL to UCL","flag":"🇬🇧","photo_path":""},{"id":"70109cf6-0f77-44cd-a402-2b65e40e83fa","name":"Karina T. Tukanova","year":"2016","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"8d98dc1a-a18a-4f02-bc7b-38810cc16740","name":"Nicole Ch. Chen","year":"2016","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"3024119f-3cc9-43d9-865b-278088e3f29b","name":"Sanzhar T. Taiteleyev","year":"2016","university":"University College London (UCL), UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"00794823-0d59-4fbd-b33c-c12e1cfb4d0d","name":"Vlad T. Tyrnov","year":"2016","university":"Heriot Watt, Dubai, OAE","country":"","notes":"","flag":"🇦🇪","photo_path":""},{"id":"83a9c006-3e64-465b-ad37-5a1219bf41be","name":"Beibit Seytzhapar","year":"2015","university":"Oxford Brookes University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"a9840f22-e0e3-493b-964a-f3a3bfb713c9","name":"Dana Sundetbayeva","year":"2015","university":"Royal Holloway, University of London, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"dd526d0c-9734-481d-9c88-d0eef472d13a","name":"Dariya Kobylyatskaya","year":"2015","university":"University of Bath, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"f5028405-639c-444a-9089-1328d72fe45b","name":"Diana Baimukhanbetova","year":"2015","university":"Instituto Maragoni, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"4343abf7-89ce-4cb4-aa22-38a612909dfc","name":"Diana Yessenbekova","year":"2015","university":"KIMEP University, KZ","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"08e7a63d-4ccf-4f48-8fe0-2291709c674a","name":"Ilya Reshetnikov","year":"2015","university":"Heriot Watt University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"2dc6b22d-7e79-4505-b0ac-dfea2c9aec6b","name":"Karlygash Nurdilda","year":"2015","university":"Queen Mary University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"7f68922b-bd31-41f5-aa1a-08e798f756ef","name":"Saida Smagul","year":"2015","university":"KIMEP University, KZ","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"18a8a1b1-3ee3-4a21-99cd-44c1cc2c1c33","name":"Ualikhan Abdraliyev","year":"2015","university":"Durham University, UK","country":"UK","notes":"","flag":"🇬🇧","photo_path":""},{"id":"1e515bba-614c-4fef-adfe-e66ca0ce81e7","name":"Yerlan Mirzakhmetov","year":"2015","university":"Kazakh-British Technical University, KZ","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"a9653197-ecf3-4608-9d8d-a99ec18369c5","name":"Arsen Bassenov","year":"2014","university":"Colorado State University, USA","country":"USA","notes":"","flag":"🇺🇸","photo_path":""},{"id":"d86b3ea2-2a34-4aec-89c9-83e30005c20b","name":"Sabina Muratkhanova","year":"2014","university":"Kazakh-British Technical University, KZ","country":"Kazakhstan","notes":"","flag":"🇰🇿","photo_path":""},{"id":"a1aaf2d4-1e23-4ca2-b2a1-e80e72409483","name":"Seungho Lee","year":"2014","university":"Chonbuk National University, South Korea","country":"South Korea","notes":"First HAL to Korea","flag":"🇰🇷","photo_path":""},{"id":"ac03aa17-7994-462a-835b-651c56e9417f","name":"Alisher Alimbetov","year":"2013","university":"Nazarbayev University, KZ","country":"","notes":"","flag":"🇰🇿","photo_path":""},{"id":"72495369-9965-47e4-b9d4-365c460a9ebc","name":"Balzhan Beisenbayeva","year":"2013","university":"University of Brighton, UK","country":"UK","notes":"First HAL to UK","flag":"🇬🇧","photo_path":""},{"id":"b56728b2-e47d-47b4-ac11-3d3d2d08a037","name":"Dilshat Alimbetova","year":"2013","university":"Nazarbayev University, KZ","country":"","notes":"","flag":"🇰🇿","photo_path":""},{"id":"91a8c9df-fb4b-49e3-86c8-18116b57a58b","name":"Galym Dosmambetov","year":"2013","university":"Les Roches International School of Hotel Management, Switzerland","country":"Switzerland","notes":"First HAL to Switzerland","flag":"🇨🇭","photo_path":""},{"id":"f862ed3d-a100-45c3-a665-17a3f94d1b0b","name":"Madineh P. Piramoon","year":"2013","university":"North Eastern University, USA","country":"USA","notes":"First HAL to USA","flag":"🇺🇸","photo_path":""},{"id":"368e0f8f-2726-494c-a7a6-c1580456e6a8","name":"Zhamilya T. Taibekova","year":"2013","university":"Heriot Watt University, Scotland","country":"UK","notes":"First HAL to Scotland","flag":"🇬🇧","photo_path":""}];
+  const embeddedPhotoById = new Map(EMBEDDED_STUDENTS.map(item => [String(item.id), String(item.photo_path || '')]));
+  const rowsFromDom = Array.from(document.querySelectorAll('.student-row'));
+  const tableBody = document.getElementById('tableBody');
+  const yearButtonsEl = document.getElementById('yearButtons');
+  const searchEl = document.getElementById('search');
+  const countLabel = document.getElementById('countLabel');
+  const selectedLabel = document.getElementById('selectedLabel');
+  const fsBtn = document.getElementById('fsBtn');
+  const logoTrigger = document.getElementById('logoTrigger');
+  const adminWelcome = document.getElementById('adminWelcome');
+  const detailOverlay = document.getElementById('detailOverlay');
+  const detailCloseBtn = document.getElementById('detailCloseBtn');
+  const detailName = document.getElementById('detailName');
+  const detailBadges = document.getElementById('detailBadges');
+  const detailUniversity = document.getElementById('detailUniversity');
+  const detailCountry = document.getElementById('detailCountry');
+  const detailNotes = document.getElementById('detailNotes');
+  const backToTopBtn = document.getElementById('backToTopBtn');
+
+  const toggleAdminBtn = document.getElementById('toggleAdminBtn');
+  const adminPanel = document.getElementById('adminPanel');
+  const formTitle = document.getElementById('formTitle');
+  const saveStudentBtn = document.getElementById('saveStudentBtn');
+  const clearFormBtn = document.getElementById('clearFormBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const importFile = document.getElementById('importFile');
+  const autoDownloadToggle = document.getElementById('autoDownloadToggle');
+  const lockAdminBtn = document.getElementById('lockAdminBtn');
+
+  const passwordOverlay = document.getElementById('passwordOverlay');
+  const passwordInput = document.getElementById('passwordInput');
+  const passwordError = document.getElementById('passwordError');
+  const passwordSubmitBtn = document.getElementById('passwordSubmitBtn');
+  const passwordCancelBtn = document.getElementById('passwordCancelBtn');
+
+  const studentNameEl = document.getElementById('studentName');
+  const gradYearEl = document.getElementById('gradYear');
+  const universityNameEl = document.getElementById('universityName');
+  const countryNameEl = document.getElementById('countryName');
+  const studentNotesEl = document.getElementById('studentNotes');
+  const studentImageEl = document.getElementById('studentImage');
+  const imagePreviewEl = document.getElementById('imagePreview');
+
+  let activeYear = null;
+  let currentImageData = "";
+  let editingId = null;
+  let isAdminUnlocked = false;
+  let pendingAdminAction = null;
+  let logoTapCount = 0;
+  let logoTapTimer = null;
+  // Render the lightweight embedded directory immediately, then refresh it
+  // from Supabase in the background. This keeps every year (including 2026)
+  // visible even on a slow mobile connection.
+  let studentsCache = EMBEDDED_STUDENTS.map(normalizeStudent);
+  try {
+    const saved = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (saved && saved.savedAt > 1790870071733 && Array.isArray(saved.students) && saved.students.length) {
+      studentsCache = saved.students.map(normalizeStudent);
+    }
+  } catch (_) {}
+  let cloudReady = false;
+  let cloudChannel = null;
+
+  function escapeHtml(value){
+    return String(value || '').replace(/[&<>"']/g, ch => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
+
+  function slugify(text){
+    return String(text || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/^-+|-+$/g,'')
+      .slice(0, 80);
+  }
+
+  function makeId(name, year){
+    return 'custom-' + (year || 'year') + '-' + slugify(name) + '-' + Date.now();
+  }
+
+  function getInitialStudents(){
+    return EMBEDDED_STUDENTS.slice();
+  }
+
+  function normalizeStudent(item, index){
+    const inferredCountry = inferCountryFromUniversity(String(item.university || '').trim(), String(item.country || '').trim());
+    return {
+      id: String(item.id || ('student-' + index)),
+      type: 'student',
+      name: String(item.name || '').trim(),
+      year: String(item.year || '').trim(),
+      university: String(item.university || '').trim(),
+      country: inferredCountry,
+      notes: String(item.notes || '').trim(),
+      image: String(item.image || item.image_url || photoOverrides.get(String(item.id || '')) || embeddedPhotoById.get(String(item.id || '')) || ''),
+      flag: String(item.flag || getFlagEmoji(inferredCountry))
+    };
+  }
+
+  function getAllStudents(){
+    return Array.isArray(studentsCache) ? studentsCache.slice() : [];
+  }
+
+  function setStatus(text){
+    if (countLabel) countLabel.textContent = text;
+  }
+
+  let refreshPromise = null;
+  async function loadCloudStudents(options){
+    if (refreshPromise) return refreshPromise;
+    refreshPromise = (async () => {
+      try {
+        await ensureCloudClient();
+        const data = [];
+        const pageSize = 1000;
+        for (let offset = 0; ; offset += pageSize) {
+          const {data:page, error} = await supabase.from('students')
+            .select('id,name,year,university,country,notes,flag')
+            .order('year', {ascending:false}).order('name', {ascending:true})
+            .range(offset, offset + pageSize - 1);
+          if (error) throw error;
+          data.push(...(page || []));
+          if (!page || page.length < pageSize) break;
+        }
+        studentsCache = data.map(normalizeStudent).filter(item => item.name && item.year);
+        cloudReady = true;
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({savedAt:Date.now(),students:data}));
+        } catch (_) {}
+        renderRows();
+        subscribeToCloud();
+        // Lightweight new photos and URL overrides are independent of directory loading.
+        loadCloudPhotoOverrides();
+        loadMissingCloudPhotos();
+      } catch (e) {
+        console.warn('Showing the saved student directory while the database is unavailable.', e);
+        cloudReady = false;
+        // Keep the last successful list, including edits and new cohorts.
+        if (!studentsCache.length) studentsCache = getInitialStudents().map(normalizeStudent);
+        renderRows();
+      }
+      return studentsCache;
+    })();
+    try { return await refreshPromise; }
+    finally { refreshPromise = null; }
+  }
+
+  function updatePhotoElements(){
+    const byId = new Map(studentsCache.map(student => [student.id, student]));
+    tableBody.querySelectorAll('.student-row').forEach(row => {
+      const student = byId.get(row.dataset.studentId);
+      const current = row.querySelector('.student-photo');
+      if (!student || !student.image || !current) return;
+      if (current.tagName === 'IMG' && current.getAttribute('src') === student.image) return;
+      const img = document.createElement('img');
+      img.className = 'student-photo'; img.alt = student.name;
+      img.loading = 'lazy'; img.decoding = 'async'; img.src = student.image;
+      current.replaceWith(img);
+    });
+    const detailId = detailOverlay.dataset.studentId;
+    if (detailId && detailOverlay.classList.contains('open') && byId.has(detailId)) {
+      setDetailPhoto(byId.get(detailId));
+    }
+  }
+
+  async function loadBundledPhotos(){
+    try {
+      const response = await timedFetch('assets/photos-20261001.json', undefined, 60000);
+      if (!response.ok) throw new Error('Photo download failed.');
+      const photos = await response.json();
+      Object.entries(photos).forEach(([id, image]) => embeddedPhotoById.set(id, image));
+      studentsCache = studentsCache.map(student => ({...student,
+        image:photoOverrides.get(student.id) || student.image || embeddedPhotoById.get(student.id) || ''
+      }));
+      updatePhotoElements();
+    } catch (e) { console.warn('Photos are temporarily unavailable.', e); }
+  }
+
+  async function loadMissingCloudPhotos(){
+    const ids = studentsCache.filter(student => !EMBEDDED_STUDENTS.some(item => item.id === student.id)).map(student => student.id);
+    if (!ids.length || !supabase) return;
+    try {
+      for (let i = 0; i < ids.length; i += 20) {
+        const {data, error} = await supabase.from('students').select('id,image_url').in('id',ids.slice(i,i+20));
+        if (error) throw error;
+        (data || []).forEach(item => { if (item.image_url) photoOverrides.set(String(item.id),item.image_url); });
+      }
+      studentsCache = studentsCache.map(student => ({...student,image:photoOverrides.get(student.id) || student.image}));
+      updatePhotoElements();
+    } catch (e) { console.warn('New photos are temporarily unavailable.', e); }
+  }
+
+  function subscribeToCloud(){
+    if (cloudChannel || !supabase) return;
+    cloudChannel = supabase
+      .channel('hal-students-live')
+      .on('postgres_changes', { event:'*', schema:'public', table:'students' }, function(payload){
+        if (payload.new && payload.new.id && payload.new.image_url) photoOverrides.set(String(payload.new.id), payload.new.image_url);
+        loadCloudStudents({silent:true});
+      })
+      .subscribe();
+  }
+
+  async function saveStudentToCloud(student, existingId){
+    await ensureCloudClient();
+    if (refreshPromise) await refreshPromise;
+    const duplicate = !existingId
+      ? studentsCache.find(function(s){
+          return String(s.name || '').trim().toLowerCase() === String(student.name || '').trim().toLowerCase() && String(s.year || '').trim() === String(student.year || '').trim();
+        })
+      : null;
+    const targetId = existingId || (duplicate && duplicate.id);
+    if (targetId) {
+      const payload = {
+        name: student.name,
+        year: student.year,
+        university: student.university,
+        country: student.country,
+        notes: student.notes,
+        image_url: student.image,
+        flag: student.flag || getFlagEmoji(student.country)
+      };
+      const { error } = await supabase.from('students').update(payload).eq('id', targetId);
+      if (error) throw error;
+    } else {
+      const payload = {
+        name: student.name,
+        year: student.year,
+        university: student.university,
+        country: student.country,
+        notes: student.notes,
+        image_url: student.image,
+        flag: student.flag || getFlagEmoji(student.country)
+      };
+      const { error } = await supabase.from('students').insert(payload);
+      if (error) throw error;
+    }
+    if (targetId && student.image) photoOverrides.set(String(targetId), student.image);
+    await loadCloudStudents({silent:true});
+  }
+
+  async function deleteStudentFromCloud(id){
+    await ensureCloudClient();
+    if (refreshPromise) await refreshPromise;
+    const { error } = await supabase.from('students').delete().eq('id', id);
+    if (error) throw error;
+    studentsCache = studentsCache.filter(function(s){ return s.id !== id; });
+    renderRows();
+  }
+
+  async function refreshFromCloud(){
+    await loadCloudStudents({silent:false});
+  }
+
+  function getFlagEmoji(countryText){
+    const raw = String(countryText || '').trim().toLowerCase();
+    if (!raw) return '';
+    const map = {
+      'uk':'🇬🇧','united kingdom':'🇬🇧','england':'🇬🇧','scotland':'🇬🇧','wales':'🇬🇧',
+      'usa':'🇺🇸','us':'🇺🇸','united states':'🇺🇸','america':'🇺🇸',
+      'canada':'🇨🇦','france':'🇫🇷','germany':'🇩🇪','italy':'🇮🇹','spain':'🇪🇸',
+      'switzerland':'🇨🇭','netherlands':'🇳🇱','holland':'🇳🇱','belgium':'🇧🇪',
+      'austria':'🇦🇹','ireland':'🇮🇪','uae':'🇦🇪','united arab emirates':'🇦🇪',
+      'kazakhstan':'🇰🇿','china':'🇨🇳','hong kong':'🇭🇰','japan':'🇯🇵','south korea':'🇰🇷',
+      'singapore':'🇸🇬','malaysia':'🇲🇾','turkey':'🇹🇷','australia':'🇦🇺','new zealand':'🇳🇿',
+      'russia':'🇷🇺','poland':'🇵🇱','czech republic':'🇨🇿','czechia':'🇨🇿','hungary':'🇭🇺',
+      'sweden':'🇸🇪','norway':'🇳🇴','denmark':'🇩🇰','finland':'🇫🇮'
+    };
+    return map[raw] || '';
+  }
+
+  function inferCountryFromUniversity(universityText, fallbackCountry=''){
+    const existing = String(fallbackCountry || '').trim();
+    if (existing) return existing;
+    const uni = String(universityText || '').trim();
+    const raw = uni.toLowerCase();
+    if (!raw) return '';
+
+    const simpleCountries = [
+      ['united kingdom','UK'],[' uk','UK'],['england','UK'],['scotland','UK'],['wales','UK'],
+      ['united states','USA'],[' usa','USA'],[' us','USA'],['america','USA'],
+      ['canada','Canada'],['australia','Australia'],['italy','Italy'],['france','France'],['germany','Germany'],
+      ['switzerland','Switzerland'],['netherlands','Netherlands'],['belgium','Belgium'],['spain','Spain'],['ireland','Ireland'],
+      ['kazakhstan','Kazakhstan'],['china','China'],['hong kong','Hong Kong'],['singapore','Singapore'],['japan','Japan'],
+      ['south korea','South Korea'],['uae','UAE'],['united arab emirates','UAE'],['russia','Russia'],['turkey','Turkey'],
+      ['malaysia','Malaysia'],['new zealand','New Zealand'],['austria','Austria'],['hungary','Hungary'],['poland','Poland'],
+      ['czech republic','Czech Republic'],['czechia','Czech Republic'],['denmark','Denmark'],['sweden','Sweden'],['norway','Norway'],['finland','Finland']
+    ];
+    for (const [needle, country] of simpleCountries){
+      if (raw.includes(needle)) return country;
+    }
+
+    const rules = [
+      ['michigan state','USA'],['uc san diego','USA'],['brown','USA'],['yale','USA'],['berkeley','USA'],['boston university','USA'],['new york university','USA'],['nyu','USA'],['columbia','USA'],['cornell','USA'],['duke','USA'],['northwestern','USA'],['georgetown','USA'],['harvard','USA'],['stanford','USA'],['princeton','USA'],['university of chicago','USA'],['carnegie mellon','USA'],['emory','USA'],['case western','USA'],['northeastern','USA'],['purdue','USA'],['university of southern california','USA'],['usc','USA'],['villanova','USA'],['penn state','USA'],['texas a&m','USA'],['indiana university','USA'],['minerva','USA'],['babson','USA'],['rhode island school of design','USA'],
+      ['university of toronto','Canada'],['mcgill','Canada'],['ubc','Canada'],['university of british columbia','Canada'],['western university','Canada'],['waterloo','Canada'],['mcmaster','Canada'],["queen's university",'Canada'],
+      ['melbourne','Australia'],['monash','Australia'],['unsw','Australia'],['sydney','Australia'],['university of queensland','Australia'],['anu','Australia'],
+      ['kings college london','UK'],["king's college london",'UK'],['ucl','UK'],['university college london','UK'],['soas','UK'],['st andrews','UK'],['oxford','UK'],['cambridge','UK'],['warwick','UK'],['imperial','UK'],['durham','UK'],['london school of economics','UK'],['lse','UK'],['edinburgh','UK'],['bath','UK'],['bristol','UK'],['manchester','UK'],['nottingham','UK'],['birmingham','UK'],['exeter','UK'],['glasgow','UK'],['leeds','UK'],['ual','UK'],['arts london','UK'],['queen mary','UK'],['cardiff','UK'],
+      ['bocconi','Italy'],['politecnico di milano','Italy'],
+      ['hkust guangzhou','Hong Kong'],['hkust','Hong Kong'],['hong kong university','Hong Kong'],['city university of hong kong','Hong Kong'],['hong kong polytechnic','Hong Kong'],
+      ['tsinghua','China'],['peking university','China'],['fudan','China'],['nyu shanghai','China'],['duke kunshan','China'],
+      ['national university of singapore','Singapore'],['ntu singapore','Singapore'],['nanyang technological','Singapore'],['smu singapore','Singapore'],
+      ['eth zurich','Switzerland'],['epfl','Switzerland'],['les roches','Switzerland'],['glion','Switzerland'],
+      ['sciences po','France'],['sorbonne','France'],['essec','France'],['insead','France'],
+      ['university of amsterdam','Netherlands'],['erasmus university','Netherlands'],['tu delft','Netherlands'],['maastricht','Netherlands'],['tilburg','Netherlands'],['groningen','Netherlands'],['leiden','Netherlands'],
+      ['constructor university','Germany'],['technical university of munich','Germany'],['tum','Germany'],['jacobs university','Germany'],
+      ['nu kazakhstan','Kazakhstan'],['kimep','Kazakhstan'],['sd university','Kazakhstan'],['astana it university','Kazakhstan'],['narxoz','Kazakhstan'],['kbtu','Kazakhstan'],['kazakh-british technical university','Kazakhstan'],
+      ['nyu abu dhabi','UAE'],['sorbonne abu dhabi','UAE']
+    ];
+    for (const [needle, country] of rules){
+      if (raw.includes(needle)) return country;
+    }
+    return '';
+  }
+
+  function formatUniversityWithCountry(universityText, countryText=''){
+    const uni = String(universityText || '').trim();
+    const country = String(countryText || '').trim();
+    if (!country) return uni;
+    const raw = uni.toLowerCase();
+    const c = country.toLowerCase();
+    if (raw.includes(c)) return uni;
+    if (country === 'UK' && (raw.includes('united kingdom') || raw.includes('england') || raw.includes('scotland') || raw.includes('wales') || raw.includes(' uk'))) return uni;
+    if (country === 'USA' && (raw.includes('united states') || raw.includes(' usa') || raw.includes(' us') || raw.includes('america'))) return uni;
+    return uni + ', ' + country;
+  }
+
+  function buildSearchText(student){
+    return [
+      student.year,
+      student.name,
+      student.university,
+      student.country,
+      student.notes
+    ].join(' ').toLowerCase().trim();
+  }
+
+  function createRowHtml(student){
+    const search = escapeHtml(buildSearchText(student));
+    const year = escapeHtml(student.year);
+    const name = escapeHtml(student.name);
+    const studentCountry = inferCountryFromUniversity(student.university, student.country);
+    const university = escapeHtml(student.university);
+    const displayUniversity = escapeHtml(formatUniversityWithCountry(student.university, studentCountry));
+    const notes = escapeHtml(student.notes);
+    const image = student.image ? '<img alt="' + name + '" class="student-photo" src="' + escapeHtml(student.image) + '" loading="lazy" decoding="async"/>'
+      : '<span class="student-photo placeholder">👤</span>';
+    const flag = escapeHtml(student.flag || getFlagEmoji(studentCountry));
+    const viewButton = '<button class="view-btn" type="button" data-view-id="' + escapeHtml(student.id) + '">View</button>';
+    const actionButtons = isAdminUnlocked
+      ? '<div class="actionCell">' +
+           '<button class="manage-btn edit" type="button" data-edit-id="' + escapeHtml(student.id) + '">Edit</button>' +
+           '<button class="manage-btn delete" type="button" data-delete-id="' + escapeHtml(student.id) + '">Delete</button>' +
+         '</div>'
+      : '';
+    return '<tr class="student-row" data-student-id="' + escapeHtml(student.id) + '" data-year="' + year + '" data-search="' + search + '">' +
+      '<td class="col-year">' + year + '</td>' +
+      '<td class="col-name"><div class="name-cell">' + image + '<span>' + name + '</span></div></td>' +
+      '<td class="col-uni"><div class="uniCell"><span>' + displayUniversity + '</span>' + (flag ? '<span class="flag-emoji">' + flag + '</span>' : '') + '</div></td>' +
+      '<td class="col-notes">' + notes + '</td>' +
+      '<td class="col-view">' + viewButton + '</td>' +
+      '<td class="col-actions">' + actionButtons + '</td>' +
+    '</tr>';
+  }
+
+  function ensureActionHeader(){
+    const headerRow = document.querySelector('table thead tr');
+    if (!headerRow.querySelector('.actions-head')) {
+      const th = document.createElement('th');
+      th.className = 'actions-head';
+      th.textContent = 'Manage';
+      headerRow.appendChild(th);
+    }
+  }
+
+  function updateAdminUI(){
+    document.body.classList.toggle('hiddenManage', !isAdminUnlocked);
+    if (toggleAdminBtn) toggleAdminBtn.textContent = isAdminUnlocked && adminPanel.classList.contains('open') ? 'Hide Form' : 'Add Student';
+    if (exportBtn) exportBtn.textContent = 'Refresh Data';
+    if (importBtn) importBtn.textContent = 'Sync Now';
+    if (lockAdminBtn) lockAdminBtn.classList.toggle('show', isAdminUnlocked);
+    if (adminPanel && !isAdminUnlocked) adminPanel.classList.remove('open');
+    if (toggleAdminBtn && toggleAdminBtn.parentElement) {
+      toggleAdminBtn.parentElement.classList.toggle('show', isAdminUnlocked);
+    }
+  }
+
+  function renderRows(){
+    ensureActionHeader();
+    const students = getAllStudents().sort((a,b) => {
+      const yearDiff = Number(b.year || 0) - Number(a.year || 0);
+      if (yearDiff !== 0) return yearDiff;
+      return String(a.name || '').localeCompare(String(b.name || ''));
+    });
+    tableBody.innerHTML = students.map(createRowHtml).join('');
+    buildYearButtons();
+    filterRows();
+    updateAdminUI();
+  }
+
+  function uniqYears(){
+    const years = new Set();
+    getAllStudents().forEach(s => years.add(String(s.year)));
+    return Array.from(years).filter(Boolean).sort((a,b)=>Number(b)-Number(a));
+  }
+
+  function setSelectedLabel(){
+    selectedLabel.textContent = activeYear === null ? "Selected: All years" : "Selected: " + activeYear;
+  }
+
+  function updateButtons(){
+    Array.from(yearButtonsEl.querySelectorAll('button')).forEach(b => {
+      const y = b.getAttribute('data-year');
+      const isActive = (activeYear === null && y === "all") || (activeYear !== null && y === String(activeYear));
+      b.classList.toggle('active', isActive);
+    });
+  }
+
+  function animateVisibleRows(){
+    const visibleRows = Array.from(document.querySelectorAll('.student-row')).filter(r => r.style.display !== 'none');
+    visibleRows.forEach((row, index) => {
+      row.classList.remove('row-show-anim');
+      row.classList.add('row-show-anim');
+      row.style.animationDelay = Math.min(index * 35, 280) + 'ms';
+    });
+  }
+
+  let filterRaf = null;
+
+  function filterRows(animate){
+    const rows = Array.from(document.querySelectorAll('.student-row'));
+    const q = (searchEl.value || "").trim().toLowerCase();
+    let shown = 0;
+    rows.forEach(r => {
+      const matchYear = (activeYear === null) || (r.dataset.year === String(activeYear));
+      const matchSearch = (!q) || ((r.dataset.search || '').indexOf(q) !== -1);
+      const ok = matchYear && matchSearch;
+      if (ok) {
+        r.style.display = "";
+        r.classList.remove('row-hidden-anim');
+        shown++;
+      } else {
+        r.classList.add('row-hidden-anim');
+        r.style.display = "none";
+      }
+    });
+    countLabel.textContent = "Showing " + shown + " of " + rows.length;
+    setSelectedLabel();
+    updateButtons();
+    if (animate !== false) animateVisibleRows();
+  }
+
+  function scheduleFilter(animate){
+    if (filterRaf) cancelAnimationFrame(filterRaf);
+    filterRaf = requestAnimationFrame(function(){
+      filterRows(animate);
+      filterRaf = null;
+    });
+  }
+
+  function makeButton(label, yearValue){
+    const b = document.createElement('button');
+    b.type = "button";
+    b.className = "year-btn";
+    b.setAttribute('data-year', yearValue);
+    b.textContent = label;
+    const activateYear = function(){
+      registerUserActivity();
+      activeYear = (yearValue === "all") ? null : Number(yearValue);
+      setSelectedLabel();
+      updateButtons();
+      scheduleFilter(false);
+    };
+    b.addEventListener('click', activateYear, {passive:true});
+    return b;
+  }
+
+  async function loadCloudPhotoOverrides(){
+    try {
+      // Old records contain large JPEG/PNG data URLs. Only fetch the small
+      // WebP images produced by the optimized admin uploader.
+      const { data, error } = await supabase
+        .from('students')
+        .select('id, image_url')
+        .or('image_url.like.data:image/webp%,image_url.like.http%');
+      if (error) throw error;
+      if (!data || !data.length) return;
+      const overrides = new Map(data.map(item => [String(item.id), String(item.image_url || '')]));
+      let changed = false;
+      studentsCache = studentsCache.map(student => {
+        const replacement = overrides.get(String(student.id));
+        if (!replacement || replacement === student.image) return student;
+        photoOverrides.set(student.id, replacement);
+        changed = true;
+        return { ...student, image: replacement };
+      });
+      if (changed) updatePhotoElements();
+    } catch (e) {
+      console.warn('Could not load optimized photo overrides.', e);
+    }
+  }
+
+  function buildYearButtons(){
+    yearButtonsEl.innerHTML = "";
+    yearButtonsEl.appendChild(makeButton("All", "all"));
+    uniqYears().forEach(y => yearButtonsEl.appendChild(makeButton(String(y), String(y))));
+  }
+
+  function toggleFullscreen(){
+    const docEl = document.documentElement;
+    if (!document.fullscreenElement) {
+      if (docEl.requestFullscreen) docEl.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+    }
+  }
+
+
+
+  function createBadgeHtml(label, value){
+    return '<span class="detailBadge"><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(value) + '</span>';
+  }
+
+  function setDetailPhoto(student){
+    const current = document.getElementById('detailPhoto');
+    if (!current) return;
+    if (student.image) {
+      const img = document.createElement('img');
+      img.id = 'detailPhoto';
+      img.className = 'detailPhoto';
+      img.alt = student.name || 'Student photo';
+      img.src = student.image;
+      current.replaceWith(img);
+    } else {
+      const div = document.createElement('div');
+      div.id = 'detailPhoto';
+      div.className = 'detailPhoto placeholder';
+      div.textContent = '🎓';
+      current.replaceWith(div);
+    }
+  }
+
+  function openDetailModal(student, options){
+    detailOverlay.dataset.studentId = student.id;
+    if (!student || !detailOverlay) return;
+    const opts = options || {};
+    detailOverlay.dataset.autoFeatured = opts.auto ? '1' : '0';
+    setDetailPhoto(student);
+    detailName.textContent = student.name || 'Student';
+    detailBadges.innerHTML = [
+      createBadgeHtml('Year', student.year || '—'),
+      createBadgeHtml('Destination', (student.flag || getFlagEmoji(student.country) || '🌍') + ' ' + (student.country || 'Unknown'))
+    ].join('');
+    detailUniversity.textContent = student.university || '—';
+    detailCountry.textContent = (student.flag || getFlagEmoji(student.country) || '🌍') + ' ' + (student.country || 'Unknown');
+    detailNotes.textContent = student.notes || 'No extra notes added yet.';
+    detailOverlay.classList.add('open');
+    detailOverlay.setAttribute('aria-hidden','false');
+  }
+
+  function closeDetailModal(){
+    if (!detailOverlay) return;
+    detailOverlay.classList.remove('open');
+    detailOverlay.setAttribute('aria-hidden','true');
+    detailOverlay.dataset.autoFeatured = '0';
+  }
+
+  function dismissDetailModal(){
+    stopFeaturedMode(false);
+    closeDetailModal();
+    scheduleFeaturedIdleStart();
+  }
+
+  function showAdminCelebration(){
+    document.body.classList.add('admin-live');
+    if (logoTrigger){
+      logoTrigger.classList.remove('tap-armed');
+      logoTrigger.classList.remove('admin-glow');
+      void logoTrigger.offsetWidth;
+      logoTrigger.classList.add('admin-glow');
+      setTimeout(() => logoTrigger.classList.remove('admin-glow'), 1900);
+    }
+    if (adminWelcome){
+      adminWelcome.classList.add('show');
+      adminWelcome.setAttribute('aria-hidden','false');
+      setTimeout(() => {
+        adminWelcome.classList.remove('show');
+        adminWelcome.setAttribute('aria-hidden','true');
+      }, 2100);
+    }
+  }
+
+  function registerLogoTap(){
+    if (isAdminUnlocked) return;
+    if (passwordOverlay.classList.contains('open')) return;
+    logoTapCount += 1;
+    if (logoTrigger) {
+      logoTrigger.classList.add('tap-armed');
+      setTimeout(() => logoTrigger && logoTrigger.classList.remove('tap-armed'), 280);
+    }
+    if (logoTapTimer) clearTimeout(logoTapTimer);
+    logoTapTimer = setTimeout(() => {
+      logoTapCount = 0;
+      logoTapTimer = null;
+    }, 1400);
+    if (logoTapCount >= 3) {
+      logoTapCount = 0;
+      if (logoTapTimer) clearTimeout(logoTapTimer);
+      logoTapTimer = null;
+      requestAdminAccess(() => {
+        updateAdminUI();
+        toggleAdmin(true);
+      });
+    }
+  }
+
+  function openPasswordModal(action){
+    pendingAdminAction = action || null;
+    passwordOverlay.classList.add('open');
+    passwordOverlay.setAttribute('aria-hidden','false');
+    passwordError.textContent = '';
+    passwordInput.value = '';
+    setTimeout(() => passwordInput.focus(), 30);
+  }
+
+  function closePasswordModal(){
+    passwordOverlay.classList.remove('open');
+    passwordOverlay.setAttribute('aria-hidden','true');
+    passwordError.textContent = '';
+    passwordInput.value = '';
+    pendingAdminAction = null;
+  }
+
+  async function unlockAdmin(){
+    const value = (passwordInput.value || '').trim();
+    if (await matchesAdminPassword(value)) {
+      isAdminUnlocked = true;
+      closePasswordModal();
+      updateAdminUI();
+      renderRows();
+      if (typeof pendingAdminAction === 'function') {
+        // pendingAdminAction is cleared in closePasswordModal, so cache before close if needed
+      }
+      return true;
+    }
+    passwordError.textContent = 'Wrong password.';
+    passwordInput.focus();
+    passwordInput.select();
+    return false;
+  }
+
+  function requestAdminAccess(action){
+    if (isAdminUnlocked) {
+      if (typeof action === 'function') action();
+      return;
+    }
+    pendingAdminAction = action || null;
+    passwordOverlay.classList.add('open');
+    passwordOverlay.setAttribute('aria-hidden','false');
+    passwordError.textContent = '';
+    passwordInput.value = '';
+    setTimeout(() => passwordInput.focus(), 30);
+  }
+
+  async function submitPassword(){
+    const value = (passwordInput.value || '').trim();
+    if (!(await matchesAdminPassword(value))) {
+      passwordError.textContent = 'Wrong password.';
+      passwordInput.focus();
+      passwordInput.select();
+      return;
+    }
+    const action = pendingAdminAction;
+    isAdminUnlocked = true;
+    closePasswordModal();
+    renderRows();
+    updateAdminUI();
+    showAdminCelebration();
+    if (typeof action === 'function') action();
+  }
+
+  function lockAdmin(){
+    isAdminUnlocked = false;
+    document.body.classList.remove('admin-live');
+    adminPanel.classList.remove('open');
+    updateAdminUI();
+    renderRows();
+  }
+
+  function toggleAdmin(forceOpen){
+    const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !adminPanel.classList.contains('open');
+    adminPanel.classList.toggle('open', shouldOpen);
+    updateAdminUI();
+    if (shouldOpen) adminPanel.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function resetForm(){
+    editingId = null;
+    formTitle.textContent = 'Add New Student';
+    studentNameEl.value = '';
+    gradYearEl.value = '';
+    universityNameEl.value = '';
+    countryNameEl.value = '';
+    studentNotesEl.value = '';
+    studentImageEl.value = '';
+    currentImageData = '';
+    imagePreviewEl.style.display = 'none';
+    imagePreviewEl.removeAttribute('src');
+  }
+
+  function fillForm(student){
+    stopFeaturedMode(true);
+    closeDetailModal();
+    editingId = student.id;
+    formTitle.textContent = 'Edit Student';
+    studentNameEl.value = student.name || '';
+    gradYearEl.value = student.year || '';
+    universityNameEl.value = student.university || '';
+    countryNameEl.value = student.country || '';
+    studentNotesEl.value = student.notes || '';
+    currentImageData = student.image || '';
+    if (currentImageData) {
+      imagePreviewEl.src = currentImageData;
+      imagePreviewEl.style.display = 'block';
+    } else {
+      imagePreviewEl.style.display = 'none';
+      imagePreviewEl.removeAttribute('src');
+    }
+    toggleAdmin(true);
+  }
+
+  function validateForm(){
+    if (!studentNameEl.value.trim()) {
+      alert('Please enter the student name.');
+      return false;
+    }
+    if (!gradYearEl.value.trim()) {
+      alert('Please enter the graduation year.');
+      return false;
+    }
+    if (!universityNameEl.value.trim()) {
+      alert('Please enter the university or destination.');
+      return false;
+    }
+    return true;
+  }
+
+  
+  async function saveStudent(){
+    if (!validateForm()) return;
+    stopFeaturedMode(true);
+    closeDetailModal();
+    const originalId = editingId;
+    const inferredCountry = inferCountryFromUniversity(universityNameEl.value.trim(), countryNameEl.value.trim());
+    const data = {
+      id: originalId || '',
+      type: 'student',
+      name: studentNameEl.value.trim(),
+      year: String(gradYearEl.value).trim(),
+      university: universityNameEl.value.trim(),
+      country: inferredCountry,
+      notes: studentNotesEl.value.trim(),
+      image: currentImageData,
+      flag: getFlagEmoji(inferredCountry)
+    };
+    try {
+      setStatus('Saving...');
+      await saveStudentToCloud(data, originalId);
+      resetForm();
+      renderRows();
+      if (adminPanel) adminPanel.classList.add('open');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      scheduleFeaturedIdleStart();
+    } catch (e) {
+      console.error(e);
+      alert('Could not save student in the shared database.');
+      renderRows();
+    }
+  }
+
+  async function deleteStudent(id){
+    try {
+      setStatus('Deleting...');
+      await deleteStudentFromCloud(id);
+      renderRows();
+    } catch (e) {
+      console.error(e);
+      alert('Could not delete this student from the shared database.');
+      renderRows();
+    }
+  }
+
+  function exportStudents(){
+    refreshFromCloud();
+  }
+
+
+  let idleStartTimer = null;
+  let featuredRotateTimer = null;
+  let featuredActive = false;
+  let featuredQueue = [];
+  let featuredIndex = -1;
+
+  function getVisibleStudentsForShowcase(){
+    const visibleIds = Array.from(document.querySelectorAll('.student-row'))
+      .filter(row => row.style.display !== 'none')
+      .map(row => row.getAttribute('data-student-id'))
+      .filter(Boolean);
+    const visibleSet = new Set(visibleIds);
+    const topKeywords = [
+      'harvard','yale','princeton','columbia','brown','cornell','dartmouth','upenn','penn',
+      'stanford','mit','massachusetts institute of technology','oxford','cambridge',
+      'imperial college london','ucl','university college london','london school of economics',
+      'caltech','duke','northwestern','uchicago','university of chicago','berkeley'
+    ];
+    return getAllStudents()
+      .filter(student => visibleSet.has(student.id))
+      .map(student => {
+        const uni = String(student.university || '').toLowerCase();
+        let score = 0;
+        if (topKeywords.some(keyword => uni.includes(keyword))) score += 100;
+        score += Math.max(0, Number(student.year || 0));
+        if ((student.notes || '').toLowerCase().includes('ivy')) score += 25;
+        return {student, score};
+      })
+      .sort((a,b) => b.score - a.score || Number(b.student.year || 0) - Number(a.student.year || 0) || String(a.student.name || '').localeCompare(String(b.student.name || '')))
+      .map(item => item.student);
+  }
+
+  function clearFeaturedTimers(){
+    if (idleStartTimer) {
+      clearTimeout(idleStartTimer);
+      idleStartTimer = null;
+    }
+    if (featuredRotateTimer) {
+      clearInterval(featuredRotateTimer);
+      featuredRotateTimer = null;
+    }
+  }
+
+  function stopFeaturedMode(closePopup){
+    clearFeaturedTimers();
+    featuredActive = false;
+    featuredQueue = [];
+    featuredIndex = -1;
+    if (closePopup && detailOverlay && detailOverlay.classList.contains('open') && detailOverlay.dataset.autoFeatured === '1') {
+      closeDetailModal();
+    }
+  }
+
+  function showNextFeaturedStudent(){
+    if (!featuredActive) return;
+    if (!featuredQueue.length) {
+      stopFeaturedMode(true);
+      scheduleFeaturedIdleStart();
+      return;
+    }
+    featuredIndex = (featuredIndex + 1) % featuredQueue.length;
+    openDetailModal(featuredQueue[featuredIndex], {auto:true});
+  }
+
+  function startFeaturedMode(){
+    stopFeaturedMode(true);
+    if (isAdminUnlocked || adminPanel.classList.contains('open') || passwordOverlay.classList.contains('open')) {
+      scheduleFeaturedIdleStart();
+      return;
+    }
+    featuredQueue = getVisibleStudentsForShowcase();
+    if (!featuredQueue.length) return;
+    featuredActive = true;
+    featuredIndex = -1;
+    showNextFeaturedStudent();
+    featuredRotateTimer = setInterval(showNextFeaturedStudent, 8000);
+  }
+
+  function scheduleFeaturedIdleStart(){
+    clearFeaturedTimers();
+    idleStartTimer = setTimeout(startFeaturedMode, 10000);
+  }
+
+  function registerUserActivity(){
+    stopFeaturedMode(true);
+    scheduleFeaturedIdleStart();
+  }
+
+
+  function compressPhotoFile(file){
+    return new Promise(function(resolve, reject){
+      if (!file || !String(file.type || '').startsWith('image/')) {
+        reject(new Error('Please choose an image file.'));
+        return;
+      }
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Could not read the selected image.'));
+      reader.onload = function(e){
+        const source = String(e.target.result || '');
+        const img = new Image();
+        img.onerror = () => reject(new Error('Could not open the selected image.'));
+        img.onload = function(){
+          const canvas = document.createElement('canvas');
+          const size = 320;
+          const sourceSize = Math.min(img.naturalWidth || img.width, img.naturalHeight || img.height);
+          const sourceX = Math.max(0, ((img.naturalWidth || img.width) - sourceSize) / 2);
+          const sourceY = Math.max(0, ((img.naturalHeight || img.height) - sourceSize) / 2);
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, sourceX, sourceY, sourceSize, sourceSize, 0, 0, size, size);
+          const optimized = canvas.toDataURL('image/webp', 0.82);
+          resolve(optimized.indexOf('data:image/webp') === 0 ? optimized : source);
+        };
+        img.src = source;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (studentImageEl) {
+    studentImageEl.addEventListener('change', async function(){
+      const file = this.files && this.files[0];
+      if (!file) return;
+      try {
+        currentImageData = await compressPhotoFile(file);
+        imagePreviewEl.src = currentImageData;
+        imagePreviewEl.style.display = 'block';
+      } catch (e) {
+        console.error(e);
+        alert(e.message || 'Could not prepare this image.');
+        studentImageEl.value = '';
+      }
+    });
+  }
+
+
+  function openStudentById(studentId){
+    const student = getAllStudents().find(s => s.id === studentId);
+    if (!student) return false;
+    if (isAdminUnlocked && adminPanel && adminPanel.classList.contains('open')) {
+      fillForm(student);
+    } else {
+      openDetailModal(student, {auto:false});
+    }
+    return true;
+  }
+
+  function handleTableInteractionTarget(target){
+    if (!target || !tableBody) return false;
+    const viewEl = target.closest('[data-view-id]');
+    const editEl = target.closest('[data-edit-id]');
+    const deleteEl = target.closest('[data-delete-id]');
+    if (viewEl) {
+      const viewId = viewEl.getAttribute('data-view-id');
+      return openStudentById(viewId);
+    }
+    if (editEl) {
+      const editId = editEl.getAttribute('data-edit-id');
+      const student = getAllStudents().find(s => s.id === editId);
+      if (student) requestAdminAccess(() => fillForm(student));
+      return true;
+    }
+    if (deleteEl) {
+      const deleteId = deleteEl.getAttribute('data-delete-id');
+      requestAdminAccess(() => {
+        if (confirm('Delete this student?')) deleteStudent(deleteId);
+      });
+      return true;
+    }
+    return false;
+  }
+
+  ['click','pointerup','touchend'].forEach(function(evtName){
+    tableBody.addEventListener(evtName, function(e){
+      const activated = handleTableInteractionTarget(e.target);
+      if (activated && (evtName === 'touchend' || evtName === 'pointerup')) e.preventDefault();
+    }, {passive:false});
+  });
+
+  if (fsBtn) fsBtn.addEventListener('click', toggleFullscreen);
+  if (searchEl) searchEl.addEventListener('input', function(){ scheduleFilter(false); });
+  if (toggleAdminBtn) toggleAdminBtn.addEventListener('click', () => requestAdminAccess(() => toggleAdmin()));
+  if (saveStudentBtn) saveStudentBtn.addEventListener('click', () => requestAdminAccess(saveStudent));
+  if (clearFormBtn) clearFormBtn.addEventListener('click', resetForm);
+  if (exportBtn) exportBtn.addEventListener('click', () => requestAdminAccess(exportStudents));
+  if (importBtn) importBtn.addEventListener('click', () => requestAdminAccess(refreshFromCloud));
+  if (importFile) importFile.style.display = 'none';
+  if (lockAdminBtn) lockAdminBtn.addEventListener('click', lockAdmin);
+  if (logoTrigger) logoTrigger.addEventListener('click', registerLogoTap);
+
+  if (passwordSubmitBtn) passwordSubmitBtn.addEventListener('click', submitPassword);
+  if (passwordCancelBtn) passwordCancelBtn.addEventListener('click', closePasswordModal);
+  if (passwordOverlay) passwordOverlay.addEventListener('click', function(e){
+    if (e.target === passwordOverlay) closePasswordModal();
+  });
+  if (detailCloseBtn) detailCloseBtn.addEventListener('click', dismissDetailModal);
+  if (detailOverlay) detailOverlay.addEventListener('click', function(e){
+    if (e.target === detailOverlay) dismissDetailModal();
+  });
+  function syncBackToTop(){
+    if (!backToTopBtn) return;
+    if (window.scrollY > 520) backToTopBtn.classList.add('show');
+    else backToTopBtn.classList.remove('show');
+  }
+
+  if (backToTopBtn){
+    backToTopBtn.addEventListener('click', function(){
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+    window.addEventListener('scroll', syncBackToTop, {passive:true});
+    syncBackToTop();
+  }
+
+  document.addEventListener('keydown', function(e){
+    if (passwordOverlay.classList.contains('open') && e.key === 'Escape') closePasswordModal();
+    if (detailOverlay.classList.contains('open') && e.key === 'Escape') dismissDetailModal();
+    if (passwordOverlay.classList.contains('open') && e.key === 'Enter') submitPassword();
+  });
+
+  ['pointerdown','wheel','touchstart','scroll','keydown'].forEach(function(evtName){
+    window.addEventListener(evtName, function(e){
+      if (evtName === 'keydown' && passwordOverlay.classList.contains('open') && e.key === 'Enter') return;
+      registerUserActivity();
+    }, {passive:true});
+  });
+  if (searchEl) {
+    searchEl.addEventListener('focus', registerUserActivity);
+    searchEl.addEventListener('input', registerUserActivity);
+  }
+
+  async function initializeApp(){
+    updateAdminUI();
+    renderRows();
+    animateVisibleRows();
+    scheduleFeaturedIdleStart();
+    loadBundledPhotos();
+    loadCloudStudents({silent:false});
+  }
+
+  initializeApp();
+})();
+</script>
+
+
+</body>
+</html>
+
