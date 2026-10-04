@@ -1101,10 +1101,10 @@ header{padding-top:18px;}
         
         // Merge cloud data with embedded data to ensure hardcoded students are never lost
         const mergedMap = new Map();
-        // 1. Add embedded students
-        EMBEDDED_STUDENTS.map(normalizeStudent).forEach(s => mergedMap.set(s.id, s));
-        // 2. Add/overwrite with cloud students
+        // 1. Add cloud students FIRST
         next.forEach(s => mergedMap.set(s.id, s));
+        // 2. Overwrite with our embedded students (so your local 2027 update ALWAYS wins!)
+        EMBEDDED_STUDENTS.map(normalizeStudent).forEach(s => mergedMap.set(s.id, s));
         
         // Convert back to array and sort by year desc, name asc
         const mergedArray = Array.from(mergedMap.values());
