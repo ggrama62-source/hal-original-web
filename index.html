@@ -1101,10 +1101,10 @@ header{padding-top:18px;}
         
         // Merge cloud data with embedded data to ensure hardcoded students are never lost
         const mergedMap = new Map();
-        // 1. Add cloud students FIRST
-        next.forEach(s => mergedMap.set(s.id, s));
-        // 2. Overwrite with our embedded students (so your local 2027 update ALWAYS wins!)
+        // 1. Add embedded students FIRST
         EMBEDDED_STUDENTS.map(normalizeStudent).forEach(s => mergedMap.set(s.id, s));
+        // 2. Overwrite with cloud students (so Admin Panel edits ALWAYS win!)
+        next.forEach(s => mergedMap.set(s.id, s));
         
         // Convert back to array and sort by year desc, name asc
         const mergedArray = Array.from(mergedMap.values());
@@ -1598,8 +1598,8 @@ header{padding-top:18px;}
     universityNameEl.value = student.university || '';
     countryNameEl.value = student.country || '';
     studentNotesEl.value = student.notes || '';
-    currentImageData = '';
     const preview = photoCache.get(student.id) || student.image || '';
+    currentImageData = preview; // Keep the existing image data unless changed
     if (preview) {
       imagePreviewEl.src = preview;
       imagePreviewEl.style.display = 'block';
